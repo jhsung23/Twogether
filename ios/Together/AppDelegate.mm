@@ -1,3 +1,4 @@
+#import <Firebase.h>
 #import "AppDelegate.h"
 
 #import <React/RCTBridge.h>
@@ -42,6 +43,10 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
   _bridgeAdapter = [[RCTSurfacePresenterBridgeAdapter alloc] initWithBridge:bridge contextContainer:_contextContainer];
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
+
+  if([FIRApp defaultApp]==nil){
+    [FIRApp configure];
+  }
 
   NSDictionary *initProps = [self prepareInitialProps];
   UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"Together", initProps);
