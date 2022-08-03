@@ -23,21 +23,22 @@ function MainTab() {
         name="홈"
         component={HomeScreen}
         options={{
-          headerTitleAlign: Platform.OS === 'ios' ? 'left' : undefined,
+          headerShown: false,
           tabBarIcon: ({color, size}) => (
             <MaterialIcons name="home" size={size} color={color} />
           ),
-          headerRight: () => (
-            <TouchableOpacity onPress={() => {}}>
-              <Ionicons
-                // eslint-disable-next-line react-native/no-inline-styles
-                style={{paddingRight: 20}}
-                name="chatbubbles-outline"
-                size={24}
-                color={'#424242'}
-              />
-            </TouchableOpacity>
-          ),
+          // headerTitleAlign: Platform.OS === 'ios' ? 'left' : undefined,
+          // headerRight: () => (
+          //   <TouchableOpacity onPress={() => {}}>
+          //     <Ionicons
+          //       // eslint-disable-next-line react-native/no-inline-styles
+          //       style={{paddingRight: 20}}
+          //       name="chatbubbles-outline"
+          //       size={24}
+          //       color={'#424242'}
+          //     />
+          //   </TouchableOpacity>
+          // ),
         }}
       />
       <Tab.Screen
