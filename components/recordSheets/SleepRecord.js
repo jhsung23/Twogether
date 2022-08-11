@@ -25,7 +25,7 @@ const category = {
   2: '밤잠',
 };
 
-function SleepRecord({onSubmit}) {
+function SleepRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null); //what
@@ -44,6 +44,7 @@ function SleepRecord({onSubmit}) {
 
     await createSleepRecord({
       code,
+      order,
       writer,
       what,
       startDate,
@@ -52,6 +53,7 @@ function SleepRecord({onSubmit}) {
     });
   }, [
     onSubmit,
+    order,
     user.id,
     user.displayName,
     selectedCategory,

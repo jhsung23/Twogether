@@ -37,7 +37,7 @@ const vol = {
   3: '많음',
 };
 
-function ToiletRecord({onSubmit}) {
+function ToiletRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null); //what
@@ -55,6 +55,7 @@ function ToiletRecord({onSubmit}) {
 
     await createToiletRecord({
       code,
+      order,
       writer,
       what,
       how,
@@ -65,6 +66,7 @@ function ToiletRecord({onSubmit}) {
     });
   }, [
     onSubmit,
+    order,
     user.id,
     user.displayName,
     selectedCategory,

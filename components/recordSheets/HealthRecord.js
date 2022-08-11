@@ -43,7 +43,7 @@ const vol = {
   3: '양 많음',
 };
 
-function HealthRecord({onSubmit}) {
+function HealthRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedFood, setSelectedFood] = useState(null); //무엇을 먹었는지 what
@@ -62,6 +62,7 @@ function HealthRecord({onSubmit}) {
 
     await createHealthRecord({
       code,
+      order,
       writer,
       what,
       how,
@@ -72,6 +73,7 @@ function HealthRecord({onSubmit}) {
     });
   }, [
     onSubmit,
+    order,
     user.id,
     user.displayName,
     selectedFood,

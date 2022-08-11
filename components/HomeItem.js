@@ -1,7 +1,21 @@
 import React from 'react';
 import {StyleSheet, View, Text, Image} from 'react-native';
 
-function HomeItem({width}) {
+function HomeItem({
+  width, // 컴포넌트(홈아이템) 가로 길이
+  id,
+
+  name, //이름
+  birthYear, //생년
+  birthMonth, //생월
+  birthDay, //생일
+  daysAfterBirth, //태어난지 n일째
+  monthsAfterBirth, //태어난지 n개월째
+  age, //나이
+  // height, //키
+  // weight, //몸무게
+  // image, //사진
+}) {
   return (
     <View style={[styles.container, styles.boxShadow]} width={width}>
       <View style={styles.babyInfoContainer}>
@@ -9,17 +23,26 @@ function HomeItem({width}) {
           style={styles.babyPhoto}
           source={require('../assets/user.png')}
         />
+
         <View style={styles.babyInfo}>
-          <Text style={styles.babyName}>성이름 (만 n세)</Text>
-          <Text style={styles.babyBirth}>D+nnnn nn개월 (nnn주 n일째)</Text>
+          <Text style={styles.babyName}>
+            {name} (만 {age}세)
+          </Text>
+          <Text style={styles.babyBirth}>
+            {birthYear}.{birthMonth}.{birthDay}
+            {'  '}D+{daysAfterBirth}
+            {'  '}
+            {monthsAfterBirth}개월
+          </Text>
         </View>
       </View>
+
       <View style={styles.box} backgroundColor={'rgba(208, 230, 165, 0.6)'}>
         <Image
           style={styles.iconImage}
           source={require('../assets/milk.png')}
         />
-        <View style={{flexDirection: 'column'}}>
+        <View style={styles.flexDirection}>
           <Text style={styles.mainText}>밥을 n끼 먹었어요</Text>
           <Text style={styles.subText}>
             마지막 섭취 시간: 오후 n시 nn분 (n시간 전)
@@ -31,7 +54,7 @@ function HomeItem({width}) {
           style={styles.iconImage}
           source={require('../assets/diaper.png')}
         />
-        <View style={{flexDirection: 'column'}}>
+        <View style={styles.flexDirection}>
           <Text style={styles.mainText}>기저귀를 n번 교체했어요</Text>
           <Text style={styles.subText}>
             마지막 교체 시간: 오후 n시 nn분 (n시간 전)
@@ -43,7 +66,7 @@ function HomeItem({width}) {
           style={styles.iconImage}
           source={require('../assets/sleeping.png')}
         />
-        <View style={{flexDirection: 'column'}}>
+        <View style={styles.flexDirection}>
           <Text style={styles.mainText}>잠을 n시간 잤어요</Text>
           <Text style={styles.subText}>
             마지막 잠든 시간: 오후 n시 nn분 (n시간 전)
@@ -55,6 +78,9 @@ function HomeItem({width}) {
 }
 
 const styles = StyleSheet.create({
+  flexDirection: {
+    flexDirection: 'column',
+  },
   container: {
     height: 335,
     borderRadius: 10,
