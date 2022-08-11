@@ -1,13 +1,9 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Platform,
   Pressable,
-  useWindowDimensions,
   TextInput,
-  Keyboard,
-  TouchableWithoutFeedback,
-  DismissKeyboardView,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
@@ -16,29 +12,59 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
 import DatePickerModal from '../../shareComponents/DatePickerModal';
+import {useUserContext} from '../../contexts/UserContext';
+import {createEtcRecord} from '../../lib/records';
 
-function EtcRecord() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  // const [selectedVol, setSelectedVol] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [memo, setMemo] = useState('');
+const categoryChips = [
+  {id: 1, content: '체험'},
+  {id: 2, content: '학습'},
+  {id: 3, content: '신체활동'},
+  {id: 4, content: '소풍'},
+  {id: 5, content: '검진'},
+];
+
+const category = {
+  1: '체험',
+  2: '학습',
+  3: '신체활동',
+  4: '소풍',
+  5: '검진',
+};
+
+function EtcRecord({onSubmit}) {
+  const {user} = useUserContext();
+
+  const [selectedCategory, setSelectedCategory] = useState(null); //what
+  const [startDate, setStartDate] = useState(new Date()); //whenStart
+  const [endDate, setEndDate] = useState(new Date()); //whenEnd
+  const [memo, setMemo] = useState(''); //memo
 
   const timeDiff = Math.round(((endDate - startDate) % 86400000) / 3600000);
 
-  const categoryChips = [
-    {id: 1, content: '체험'},
-    {id: 2, content: '학습'},
-    {id: 3, content: '신체활동'},
-    {id: 4, content: '소풍'},
-    {id: 5, content: '검진'},
-  ];
+  const submit = useCallback(async () => {
+    onSubmit();
 
-  const volChips = [
-    {id: 1, content: '적음'},
-    {id: 2, content: '보통'},
-    {id: 3, content: '많음'},
-  ];
+    const code = user.id;
+    const writer = user.displayName;
+    const what = category[selectedCategory];
+
+    await createEtcRecord({
+      code,
+      writer,
+      what,
+      startDate,
+      endDate,
+      memo,
+    });
+  }, [
+    onSubmit,
+    user.id,
+    user.displayName,
+    selectedCategory,
+    startDate,
+    endDate,
+    memo,
+  ]);
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.sheetWrapper}>
@@ -48,14 +74,14 @@ function EtcRecord() {
         <Text style={styles.sheetTitle}>활동 기록</Text>
         <Pressable
           style={({pressed}) => [
-            // styles.button,
             Platform.OS === 'ios' && {
               opacity: pressed ? 0.6 : 1,
             },
           ]}
-          onPress={() =>
-            console.log('저장 완료 구현 필요!!!!!!!! check pressed')
-          }>
+          android_ripple={{color: '#ededed'}}
+          onPress={() => {
+            submit();
+          }}>
           <Icon name="done" size={29} color={'#2dad3c'} />
         </Pressable>
       </View>
@@ -66,7 +92,7 @@ function EtcRecord() {
           <Chip
             key={id}
             style={styles.chip}
-            textStyle={{color: '#454545', fontSize: 15}}
+            textStyle={styles.chipText}
             height={30}
             icon={id === selectedCategory ? 'check' : null}
             // showSelectedOverlay={id === selected}
@@ -84,25 +110,14 @@ function EtcRecord() {
       </View>
 
       <Text style={styles.itemTitle}>활동한 시간은 언제인가요?</Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 10,
-        }}>
+      <View style={styles.startTimeViewWrapper}>
         <Text style={styles.itemText}>시작 시간</Text>
         <View style={styles.itemChipWrapper}>
           <DatePickerModal date={startDate} onClick={setStartDate} />
         </View>
         <Text style={styles.itemText}>부터</Text>
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginVertical: 10,
-          marginBottom: 20,
-        }}>
+      <View style={styles.endTimeViewWrapper}>
         <Text style={styles.itemText}>종료 시간</Text>
         <View style={styles.itemChipWrapper}>
           <DatePickerModal date={endDate} onClick={setEndDate} />
@@ -111,6 +126,7 @@ function EtcRecord() {
         <Text
           style={[
             styles.itemText,
+            // eslint-disable-next-line react-native/no-inline-styles
             {marginStart: 10},
           ]}>{`( 약 ${timeDiff} 시간 )`}</Text>
       </View>
@@ -124,15 +140,6 @@ function EtcRecord() {
         value={memo}
         onChangeText={setMemo}
       />
-      {/* <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
-      <TextInput
-        style={styles.input}
-        multiline={true}
-        placeholder="특이사항을 남겨보세요"
-        textAlignVertical="top"
-        value={memo}
-        onChangeText={setMemo}
-      /> */}
       {/* </> */}
       {/* /      // </TouchableWithoutFeedback> */}
     </KeyboardAvoidingView>
@@ -143,14 +150,12 @@ const styles = StyleSheet.create({
   sheetWrapper: {
     flex: 1,
     justifyContent: 'flex-start',
-    // backgroundColor: 'lightblue',
   },
   sheetHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 15,
-    // backgroundColor: 'lightgrey',
   },
   sheetTitle: {
     color: '#454545',
@@ -180,6 +185,21 @@ const styles = StyleSheet.create({
     marginEnd: 5,
     justifyContent: 'center',
     backgroundColor: 'rgba(152,196,102,0.25)',
+  },
+  chipText: {
+    color: '#454545',
+    fontSize: 15,
+  },
+  startTimeViewWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  endTimeViewWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    marginBottom: 20,
   },
   dateButton: {
     padding: 10,

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import BottomSheet from '../components/BottomSheet';
 import useModal from '../utils/modal';
-import EatingRecord from '../components/recordSheets/EatingRecord';
+import EatingRecord from '../components/recordSheets/EatRecord';
 import SleepRecord from '../components/recordSheets/SleepRecord';
 import ToiletRecord from '../components/recordSheets/ToiletRecord';
 import HealthRecord from '../components/recordSheets/HealthRecord';
@@ -18,6 +18,7 @@ function RecordScreen() {
   const [bottomSheetType, setBottomSheetType] = useState('');
   const pressButton = ({label}, index) => {
     setBottomSheetType(label);
+    setIsMenuOpen(false);
     openModal();
   };
 
@@ -70,11 +71,21 @@ function RecordScreen() {
         renderItemIcon={renderItemIcon}
       />
       <BottomSheet modalVisible={isOpenModal} onClose={closeModal}>
-        {bottomSheetType === '기타 활동 기록' && <EtcRecord />}
-        {bottomSheetType === '건강 기록' && <HealthRecord />}
-        {bottomSheetType === '수면 기록' && <SleepRecord />}
-        {bottomSheetType === '배변 기록' && <ToiletRecord />}
-        {bottomSheetType === '섭취 기록' && <EatingRecord />}
+        {bottomSheetType === '기타 활동 기록' && (
+          <EtcRecord onSubmit={closeModal} />
+        )}
+        {bottomSheetType === '건강 기록' && (
+          <HealthRecord onSubmit={closeModal} />
+        )}
+        {bottomSheetType === '수면 기록' && (
+          <SleepRecord onSubmit={closeModal} />
+        )}
+        {bottomSheetType === '배변 기록' && (
+          <ToiletRecord onSubmit={closeModal} />
+        )}
+        {bottomSheetType === '섭취 기록' && (
+          <EatingRecord onSubmit={closeModal} />
+        )}
       </BottomSheet>
     </View>
   );

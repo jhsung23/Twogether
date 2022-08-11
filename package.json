@@ -22,6 +22,7 @@
     "react-native-asset": "^2.0.1",
     "react-native-bouncy-checkbox": "^3.0.2",
     "react-native-date-picker": "^4.2.5",
+    "react-native-easy-toast": "^2.0.0",
     "react-native-floating-action-menu": "^1.2.4",
     "react-native-image-picker": "^4.8.4",
     "react-native-paper": "^4.12.4",

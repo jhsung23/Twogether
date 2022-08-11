@@ -1,34 +1,64 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Platform,
   Pressable,
-  useWindowDimensions,
   TextInput,
-  Keyboard,
-  TouchableWithoutFeedback,
-  DismissKeyboardView,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
+import {useUserContext} from '../../contexts/UserContext';
 
 import DatePickerModal from '../../shareComponents/DatePickerModal';
+import {createSleepRecord} from '../../lib/records';
 
-function SleepRecord() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [memo, setMemo] = useState('');
+const categoryChips = [
+  {id: 1, content: '낮잠'},
+  {id: 2, content: '밤잠'},
+];
 
-  const categoryChips = [
-    {id: 1, content: '낮잠'},
-    {id: 2, content: '밤잠'},
-  ];
+const category = {
+  1: '낮잠',
+  2: '밤잠',
+};
+
+function SleepRecord({onSubmit}) {
+  const {user} = useUserContext();
+
+  const [selectedCategory, setSelectedCategory] = useState(null); //what
+  const [startDate, setStartDate] = useState(new Date()); //whenStart
+  const [endDate, setEndDate] = useState(new Date()); //whenEnd
+  const [memo, setMemo] = useState(''); //memo
 
   const timeDiff = Math.ceil(((endDate - startDate) % 86400000) / 3600000);
+
+  const submit = useCallback(async () => {
+    onSubmit();
+
+    const code = user.id; //공유 코드
+    const writer = user.displayName;
+    const what = category[selectedCategory];
+
+    await createSleepRecord({
+      code,
+      writer,
+      what,
+      startDate,
+      endDate,
+      memo,
+    });
+  }, [
+    onSubmit,
+    user.id,
+    user.displayName,
+    selectedCategory,
+    startDate,
+    endDate,
+    memo,
+  ]);
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.sheetWrapper}>
@@ -38,14 +68,14 @@ function SleepRecord() {
         <Text style={styles.sheetTitle}>수면 기록</Text>
         <Pressable
           style={({pressed}) => [
-            // styles.button,
             Platform.OS === 'ios' && {
               opacity: pressed ? 0.6 : 1,
             },
           ]}
-          onPress={() =>
-            console.log('저장 완료 구현 필요!!!!!!!! check pressed')
-          }>
+          android_ripple={{color: '#ededed'}}
+          onPress={() => {
+            submit();
+          }}>
           <Icon name="done" size={29} color={'#2dad3c'} />
         </Pressable>
       </View>
@@ -56,10 +86,9 @@ function SleepRecord() {
           <Chip
             key={id}
             style={styles.chip}
-            textStyle={{color: '#454545', fontSize: 15}}
+            textStyle={styles.chipText}
             height={30}
             icon={id === selectedCategory ? 'check' : null}
-            // showSelectedOverlay={id === selected}
             selected={id === selectedCategory}
             onPress={() => {
               if (id === selectedCategory) {
@@ -74,25 +103,14 @@ function SleepRecord() {
       </View>
 
       <Text style={styles.itemTitle}>언제부터 언제까지 잠을 잤나요?</Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginTop: 10,
-        }}>
+      <View style={styles.startTimeViewWrapper}>
         <Text style={styles.itemText}>잠든 시간</Text>
         <View style={styles.itemChipWrapper}>
           <DatePickerModal date={startDate} onClick={setStartDate} />
         </View>
         <Text style={styles.itemText}>부터</Text>
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginVertical: 10,
-          marginBottom: 20,
-        }}>
+      <View style={styles.endTimeViewWrapper}>
         <Text style={styles.itemText}>잠깬 시간</Text>
         <View style={styles.itemChipWrapper}>
           <DatePickerModal date={endDate} onClick={setEndDate} />
@@ -101,6 +119,7 @@ function SleepRecord() {
         <Text
           style={[
             styles.itemText,
+            // eslint-disable-next-line react-native/no-inline-styles
             {marginStart: 10},
           ]}>{`( 약 ${timeDiff} 시간 )`}</Text>
       </View>
@@ -124,14 +143,12 @@ const styles = StyleSheet.create({
   sheetWrapper: {
     flex: 1,
     justifyContent: 'flex-start',
-    // backgroundColor: 'lightblue',
   },
   sheetHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 15,
-    // backgroundColor: 'lightgrey',
   },
   sheetTitle: {
     color: '#454545',
@@ -161,6 +178,21 @@ const styles = StyleSheet.create({
     marginEnd: 5,
     justifyContent: 'center',
     backgroundColor: 'rgba(152,196,102,0.25)',
+  },
+  chipText: {
+    color: '#454545',
+    fontSize: 15,
+  },
+  startTimeViewWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  endTimeViewWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 10,
+    marginBottom: 20,
   },
   dateButton: {
     padding: 10,

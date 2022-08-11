@@ -1,13 +1,9 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   View,
   Platform,
   Pressable,
-  useWindowDimensions,
   TextInput,
-  Keyboard,
-  TouchableWithoutFeedback,
-  DismissKeyboardView,
   Text,
   StyleSheet,
   KeyboardAvoidingView,
@@ -15,27 +11,73 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
+import {createEatRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
+import {useUserContext} from '../../contexts/UserContext';
 
-function EatingRecord() {
-  const [selectedFood, setSelectedFood] = useState(null);
-  const [selectedVol, setSelectedVol] = useState(null);
-  const [date, setDate] = useState(new Date());
-  const [memo, setMemo] = useState('');
+const foodChips = [
+  {id: 1, content: '모유'},
+  {id: 2, content: '분유'},
+  {id: 3, content: '이유식'},
+  {id: 4, content: '미음'},
+  {id: 5, content: '기타'},
+];
 
-  const foodChips = [
-    {id: 1, content: '모유'},
-    {id: 2, content: '분유'},
-    {id: 3, content: '이유식'},
-    {id: 4, content: '미음'},
-    {id: 5, content: '기타'},
-  ];
+const food = {
+  1: '모유',
+  2: '분유',
+  3: '이유식',
+  4: '미음',
+  5: '기타',
+};
 
-  const volChips = [
-    {id: 1, content: '양 적음'},
-    {id: 2, content: '양 적당'},
-    {id: 3, content: '양 많음'},
-  ];
+const volChips = [
+  {id: 1, content: '양 적음'},
+  {id: 2, content: '양 적당'},
+  {id: 3, content: '양 많음'},
+];
+
+const vol = {
+  1: '양 적음',
+  2: '양 적당',
+  3: '양 많음',
+};
+
+function EatingRecord({onSubmit}) {
+  const {user} = useUserContext();
+
+  const [selectedFood, setSelectedFood] = useState(null); //무엇을 먹었는지 what
+  const [selectedVol, setSelectedVol] = useState(null); //얼마나 먹었는지 how
+  const [date, setDate] = useState(new Date()); //언제 먹었는지 when
+  const [memo, setMemo] = useState(''); //기타 특이사항 memo
+
+  const submit = useCallback(async () => {
+    onSubmit(); //close modal
+
+    const code = user.id; //공유 코드
+    const writer = user.displayName;
+    const what = food[selectedFood];
+    const how = vol[selectedVol];
+
+    await createEatRecord({
+      code,
+      writer,
+      what,
+      how,
+      date,
+      memo,
+    }).catch(error => {
+      console.log(error.message);
+    });
+  }, [
+    onSubmit,
+    user.id,
+    user.displayName,
+    selectedFood,
+    selectedVol,
+    date,
+    memo,
+  ]);
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.sheetWrapper}>
@@ -43,16 +85,16 @@ function EatingRecord() {
       {/* <> */}
       <View style={styles.sheetHeader}>
         <Text style={styles.sheetTitle}>섭취 기록</Text>
-        <Pressable
+        <Pressable //체크 버튼
           style={({pressed}) => [
-            // styles.button,
             Platform.OS === 'ios' && {
               opacity: pressed ? 0.6 : 1,
             },
           ]}
-          onPress={() =>
-            console.log('저장 완료 구현 필요!!!!!!!! check pressed')
-          }>
+          android_ripple={{color: '#ededed'}}
+          onPress={() => {
+            submit(); //저장하기 함수
+          }}>
           <Icon name="done" size={29} color={'#2dad3c'} />
         </Pressable>
       </View>
@@ -63,10 +105,9 @@ function EatingRecord() {
           <Chip
             key={id}
             style={styles.chip}
-            textStyle={{color: '#454545', fontSize: 15}}
+            textStyle={styles.chipText}
             height={30}
             icon={id === selectedFood ? 'check' : null}
-            // showSelectedOverlay={id === selected}
             selected={id === selectedFood}
             onPress={() => {
               if (id === selectedFood) {
@@ -86,10 +127,9 @@ function EatingRecord() {
           <Chip
             key={id}
             style={styles.chip}
-            textStyle={{color: '#454545', fontSize: 15}}
+            textStyle={styles.chipText}
             height={30}
             icon={id === selectedVol ? 'check' : null}
-            // showSelectedOverlay={id === selected}
             selected={id === selectedVol}
             onPress={() => {
               if (id === selectedVol) {
@@ -127,14 +167,12 @@ const styles = StyleSheet.create({
   sheetWrapper: {
     flex: 1,
     justifyContent: 'flex-start',
-    // backgroundColor: 'lightblue',
   },
   sheetHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 15,
-    // backgroundColor: 'lightgrey',
   },
   sheetTitle: {
     color: '#454545',
@@ -144,19 +182,21 @@ const styles = StyleSheet.create({
   itemTitle: {
     color: '#454545',
     fontSize: 18,
-    // backgroundColor: 'pink',
   },
   chipWrapper: {
     flexWrap: 'wrap',
     flexDirection: 'row',
     marginTop: 10,
     marginBottom: 25,
-    // backgroundColor: 'pink',
   },
   chip: {
     marginEnd: 5,
     justifyContent: 'center',
     backgroundColor: 'rgba(152,196,102,0.25)',
+  },
+  chipText: {
+    color: '#454545',
+    fontSize: 15,
   },
   dateButton: {
     padding: 10,
