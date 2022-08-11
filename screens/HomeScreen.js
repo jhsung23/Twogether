@@ -10,13 +10,15 @@ import {
   View,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+// eslint-disable-next-line no-unused-vars
 import NoticeMsgBox from '../components/NoticeMsgBox';
 import HomeItem from '../components/HomeItem';
 import HomeItemAdd from '../components/HomeItemAdd';
 import NotToDoBox from '../components/NotToDoBox';
 import {useUserContext} from '../contexts/UserContext';
 import {getBaby} from '../lib/baby';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 //TODO
 //1. Pressable 클릭 시 메시지 스크린으로 이동
@@ -27,7 +29,9 @@ const {width} = Dimensions.get('window');
 function HomeScreen() {
   //현재 로그인한 유저 정보를 담은 객체(user)
   const {user} = useUserContext();
-  const [todayInfo, setTodayInfo] = useState('');
+
+  const [babyInfo, setBabyInfo] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [todos, setTodos] = useState('dd');
 
   //날짜 표시
@@ -40,8 +44,9 @@ function HomeScreen() {
   };
 
   useEffect(() => {
-    getBaby().then(setTodayInfo);
-  }, []);
+    const code = user.id;
+    getBaby({code}).then(setBabyInfo);
+  }, [user.id]);
 
   return (
     <SafeAreaView style={styles.block}>
@@ -87,12 +92,12 @@ function HomeScreen() {
           <NotToDoBox /> //todo 없는경우
         )}
 
-        <Text style={styles.titleText}>오늘 우리 아기는</Text>
+        <Text style={styles.titleText}>오늘 우리 아가는</Text>
         <FlatList
           style={styles.list}
-          data={todayInfo}
+          data={babyInfo}
           renderItem={renderTodayInfo}
-          // keyExtractor={item => item.id}
+          keyExtractor={item => item.id}
           showsHorizontalScrollIndicator={false}
           horizontal={true}
           ListFooterComponent={<HomeItemAdd width={width - 200} />}
@@ -113,16 +118,31 @@ const renderTodo = ({item}) => {
       fillColor="#e8cb6b"
       unfillColor="#ffffff"
       text="임시 투두 임시 투두"
-      iconInnerStyle={{borderWidth: 1}}
+      iconInnerStyle={styles.borderWidth}
       onPress={isChecked => {}}
     />
   );
 };
 const renderTodayInfo = ({item}) => {
-  return <HomeItem width={width - 50} />;
+  return (
+    <HomeItem
+      width={width - 50}
+      id={item.id}
+      name={item.name}
+      birthYear={item.birthYear}
+      birthMonth={item.birthMonth}
+      birthDay={item.birthDay}
+      daysAfterBirth={item.daysAfterBirth}
+      monthsAfterBirth={item.monthsAfterBirth}
+      age={item.age}
+    />
+  );
 };
 
 const styles = StyleSheet.create({
+  borderWidth: {
+    borderWidth: 1,
+  },
   block: {
     flex: 1,
     backgroundColor: 'white',

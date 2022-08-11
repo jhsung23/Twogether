@@ -43,7 +43,7 @@ const vol = {
   3: '양 많음',
 };
 
-function EatingRecord({onSubmit}) {
+function EatingRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedFood, setSelectedFood] = useState(null); //무엇을 먹었는지 what
@@ -61,6 +61,7 @@ function EatingRecord({onSubmit}) {
 
     await createEatRecord({
       code,
+      order,
       writer,
       what,
       how,
@@ -71,6 +72,7 @@ function EatingRecord({onSubmit}) {
     });
   }, [
     onSubmit,
+    order,
     user.id,
     user.displayName,
     selectedFood,

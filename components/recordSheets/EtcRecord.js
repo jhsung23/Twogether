@@ -31,7 +31,7 @@ const category = {
   5: '검진',
 };
 
-function EtcRecord({onSubmit}) {
+function EtcRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null); //what
@@ -50,6 +50,7 @@ function EtcRecord({onSubmit}) {
 
     await createEtcRecord({
       code,
+      order,
       writer,
       what,
       startDate,
@@ -58,6 +59,7 @@ function EtcRecord({onSubmit}) {
     });
   }, [
     onSubmit,
+    order,
     user.id,
     user.displayName,
     selectedCategory,
