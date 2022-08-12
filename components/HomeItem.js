@@ -65,7 +65,7 @@ function HomeItem({
             <>
               <Text style={styles.mainText}>밥을 {eat.length} 끼 먹었어요</Text>
               <Text style={styles.subText}>
-                마지막 섭취 시간: {formatTime(eat[0].when.toDate())} (n시간 전)
+                마지막 섭취 시간: {formatTime(eat[0].when.toDate())}
               </Text>
             </>
           ) : (
@@ -94,8 +94,7 @@ function HomeItem({
                 기저귀를 {toilet.length} 회 교체했어요
               </Text>
               <Text style={styles.subText}>
-                마지막 교체 시간: {formatTime(toilet[0].when.toDate())} (n시간
-                전)
+                마지막 교체 시간: {formatTime(toilet[0].when.toDate())}
               </Text>
             </>
           ) : (
@@ -123,7 +122,6 @@ function HomeItem({
               <Text style={styles.mainText}>잠을 {sleep.length} 번 잤어요</Text>
               <Text style={styles.subText}>
                 마지막 잠든 시간: {formatTime(sleep[0].whenStart.toDate())}{' '}
-                (n시간 전)
               </Text>
             </>
           ) : (
@@ -203,8 +201,8 @@ const styles = StyleSheet.create({
   },
   subText: {
     color: '#454545',
-    fontSize: 11,
-    marginTop: 3,
+    fontSize: 12,
+    marginTop: 5,
   },
   mainTextNone: {
     color: '#7a7a7a',
@@ -212,8 +210,8 @@ const styles = StyleSheet.create({
   },
   subTextNone: {
     color: '#7a7a7a',
-    fontSize: 11,
-    marginTop: 3,
+    fontSize: 12,
+    marginTop: 5,
   },
   spinnerWrapper: {
     flex: 1,
