@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,6 +8,8 @@ import {
   SafeAreaView,
   FlatList,
   View,
+  RefreshControl,
+  DevSettings,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,6 +31,7 @@ const {width} = Dimensions.get('window');
 function HomeScreen() {
   //현재 로그인한 유저 정보를 담은 객체(user)
   const {user} = useUserContext();
+  const code = user.id;
 
   const [babyInfo, setBabyInfo] = useState();
   // eslint-disable-next-line no-unused-vars
@@ -44,15 +47,30 @@ function HomeScreen() {
   };
 
   useEffect(() => {
-    const code = user.id;
     getBaby({code}).then(setBabyInfo);
-  }, [user.id]);
+  }, [code, babyInfo]);
+
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(1000).then(() => {
+      DevSettings.reload();
+      setRefreshing(false);
+    });
+  }, []);
 
   return (
     <SafeAreaView style={styles.block}>
       <ScrollView
         nestedScrollEnabled={true}
-        showsVerticalScrollIndicator={false}>
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         <View style={styles.TopContainer}>
           <View>
             <Text style={styles.dateText}>
