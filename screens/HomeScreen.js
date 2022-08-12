@@ -30,9 +30,9 @@ function HomeScreen() {
   //현재 로그인한 유저 정보를 담은 객체(user)
   const {user} = useUserContext();
 
-  const [babyInfo, setBabyInfo] = useState('');
+  const [babyInfo, setBabyInfo] = useState();
   // eslint-disable-next-line no-unused-vars
-  const [todos, setTodos] = useState('dd');
+  const [todos, setTodos] = useState([]);
 
   //날짜 표시
   const today = new Date();
@@ -82,7 +82,7 @@ function HomeScreen() {
         </Pressable> */}
 
         <Text style={styles.titleText}>이번 주 주요 일정</Text>
-        {todos ? (
+        {todos.length ? (
           <FlatList
             style={styles.todoContainer}
             data={todos}
@@ -127,7 +127,6 @@ const renderTodayInfo = ({item}) => {
   return (
     <HomeItem
       width={width - 50}
-      id={item.id}
       name={item.name}
       birthYear={item.birthYear}
       birthMonth={item.birthMonth}
@@ -135,6 +134,7 @@ const renderTodayInfo = ({item}) => {
       daysAfterBirth={item.daysAfterBirth}
       monthsAfterBirth={item.monthsAfterBirth}
       age={item.age}
+      order={item.order}
     />
   );
 };

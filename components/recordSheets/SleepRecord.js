@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
-import {useUserContext} from '../../contexts/UserContext';
 
+import {useUserContext} from '../../contexts/UserContext';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
 
