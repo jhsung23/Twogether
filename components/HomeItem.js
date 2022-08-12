@@ -47,10 +47,21 @@ function HomeItem({
           source={require('../assets/milk.png')}
         />
         <View style={styles.flexDirection}>
-          <Text style={styles.mainText}>밥을 {eatCount} 끼 먹었어요</Text>
-          <Text style={styles.subText}>
-            마지막 섭취 시간: {lastEatTime} (n시간 전)
-          </Text>
+          {eatCount ? (
+            <>
+              <Text style={styles.mainText}>밥을 {eatCount} 끼 먹었어요</Text>
+              <Text style={styles.subText}>
+                마지막 섭취 시간: {lastEatTime} (n시간 전)
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.mainTextNone}>오늘의 섭취 기록이 없음</Text>
+              <Text style={styles.subTextNone}>
+                마지막 섭취 시간: 등록된 기록 없음
+              </Text>
+            </>
+          )}
         </View>
       </View>
       <View style={styles.box} backgroundColor={'rgba(255, 201, 219, 0.6)'}>
@@ -59,12 +70,23 @@ function HomeItem({
           source={require('../assets/diaper.png')}
         />
         <View style={styles.flexDirection}>
-          <Text style={styles.mainText}>
-            기저귀를 {toiletCount} 회 교체했어요
-          </Text>
-          <Text style={styles.subText}>
-            마지막 교체 시간: {lastToiletTime} (n시간 전)
-          </Text>
+          {toiletCount ? (
+            <>
+              <Text style={styles.mainText}>
+                기저귀를 {toiletCount} 회 교체했어요
+              </Text>
+              <Text style={styles.subText}>
+                마지막 교체 시간: {lastToiletTime} (n시간 전)
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.mainTextNone}>오늘의 배변 기록이 없음</Text>
+              <Text style={styles.subTextNone}>
+                마지막 기저귀 교체 시간: 등록된 기록 없음
+              </Text>
+            </>
+          )}
         </View>
       </View>
       <View style={styles.box} backgroundColor={'rgba(168, 205, 240, 0.6)'}>
@@ -73,10 +95,21 @@ function HomeItem({
           source={require('../assets/sleeping.png')}
         />
         <View style={styles.flexDirection}>
-          <Text style={styles.mainText}>잠을 {sleepCount} 번 잤어요</Text>
-          <Text style={styles.subText}>
-            마지막 잠든 시간: {lastSleepTime} (n시간 전)
-          </Text>
+          {sleepCount ? (
+            <>
+              <Text style={styles.mainText}>잠을 {sleepCount} 번 잤어요</Text>
+              <Text style={styles.subText}>
+                마지막 잠든 시간: {lastSleepTime} (n시간 전)
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.mainTextNone}>오늘의 수면 기록이 없음</Text>
+              <Text style={styles.subTextNone}>
+                마지막 잠든 시간: 등록된 기록 없음
+              </Text>
+            </>
+          )}
         </View>
       </View>
     </View>
@@ -146,6 +179,15 @@ const styles = StyleSheet.create({
   },
   subText: {
     color: '#454545',
+    fontSize: 11,
+    marginTop: 3,
+  },
+  mainTextNone: {
+    color: '#7a7a7a',
+    fontSize: 15,
+  },
+  subTextNone: {
+    color: '#7a7a7a',
     fontSize: 11,
     marginTop: 3,
   },

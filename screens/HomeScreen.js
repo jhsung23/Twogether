@@ -30,7 +30,7 @@ function HomeScreen() {
   //현재 로그인한 유저 정보를 담은 객체(user)
   const {user} = useUserContext();
 
-  const [babyInfo, setBabyInfo] = useState('');
+  const [babyInfo, setBabyInfo] = useState();
   // eslint-disable-next-line no-unused-vars
   const [todos, setTodos] = useState('dd');
 
