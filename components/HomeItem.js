@@ -1,9 +1,12 @@
-import React from 'react';
-import {StyleSheet, View, Text, Image} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, Text, Image, ActivityIndicator} from 'react-native';
+
+import {useUserContext} from '../contexts/UserContext';
+import {getEat, getToilet, getSleep} from '../lib/records';
+import {formatTime} from '../utils/date';
 
 function HomeItem({
   width, // 컴포넌트(홈아이템) 가로 길이
-  id,
 
   name, //이름
   birthYear, //생년
@@ -12,14 +15,21 @@ function HomeItem({
   daysAfterBirth, //태어난지 n일째
   monthsAfterBirth, //태어난지 n개월째
   age, //나이
-
-  eatCount,
-  sleepCount,
-  toiletCount,
-  lastEatTime,
-  lastSleepTime,
-  lastToiletTime,
+  order,
 }) {
+  const {user} = useUserContext();
+  const [eat, setEat] = useState();
+  const [toilet, setToilet] = useState();
+  const [sleep, setSleep] = useState();
+
+  useEffect(() => {
+    const code = user.id;
+
+    getEat({code, order}).then(setEat);
+    getToilet({code, order}).then(setToilet);
+    getSleep({code, order}).then(setSleep);
+  }, [user.id, order]);
+
   return (
     <View style={[styles.container, styles.boxShadow]} width={width}>
       <View style={styles.babyInfoContainer}>
@@ -47,11 +57,15 @@ function HomeItem({
           source={require('../assets/milk.png')}
         />
         <View style={styles.flexDirection}>
-          {eatCount ? (
+          {!eat ? (
+            <View style={styles.spinnerWrapper}>
+              <ActivityIndicator size={32} color="#454545" />
+            </View>
+          ) : eat.length ? (
             <>
-              <Text style={styles.mainText}>밥을 {eatCount} 끼 먹었어요</Text>
+              <Text style={styles.mainText}>밥을 {eat.length} 끼 먹었어요</Text>
               <Text style={styles.subText}>
-                마지막 섭취 시간: {lastEatTime} (n시간 전)
+                마지막 섭취 시간: {formatTime(eat[0].when.toDate())} (n시간 전)
               </Text>
             </>
           ) : (
@@ -70,13 +84,18 @@ function HomeItem({
           source={require('../assets/diaper.png')}
         />
         <View style={styles.flexDirection}>
-          {toiletCount ? (
+          {!toilet ? (
+            <View style={styles.spinnerWrapper}>
+              <ActivityIndicator size={32} color="#454545" />
+            </View>
+          ) : toilet.length ? (
             <>
               <Text style={styles.mainText}>
-                기저귀를 {toiletCount} 회 교체했어요
+                기저귀를 {toilet.length} 회 교체했어요
               </Text>
               <Text style={styles.subText}>
-                마지막 교체 시간: {lastToiletTime} (n시간 전)
+                마지막 교체 시간: {formatTime(toilet[0].when.toDate())} (n시간
+                전)
               </Text>
             </>
           ) : (
@@ -95,11 +114,16 @@ function HomeItem({
           source={require('../assets/sleeping.png')}
         />
         <View style={styles.flexDirection}>
-          {sleepCount ? (
+          {!sleep ? (
+            <View style={styles.spinnerWrapper}>
+              <ActivityIndicator size={32} color="#454545" />
+            </View>
+          ) : sleep.length ? (
             <>
-              <Text style={styles.mainText}>잠을 {sleepCount} 번 잤어요</Text>
+              <Text style={styles.mainText}>잠을 {sleep.length} 번 잤어요</Text>
               <Text style={styles.subText}>
-                마지막 잠든 시간: {lastSleepTime} (n시간 전)
+                마지막 잠든 시간: {formatTime(sleep[0].whenStart.toDate())}{' '}
+                (n시간 전)
               </Text>
             </>
           ) : (
@@ -190,6 +214,13 @@ const styles = StyleSheet.create({
     color: '#7a7a7a',
     fontSize: 11,
     marginTop: 3,
+  },
+  spinnerWrapper: {
+    flex: 1,
+    flexDirection: 'row',
+    textAlign: 'center',
+    width: '100%',
+    justifyContent: 'center',
   },
 });
 

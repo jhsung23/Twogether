@@ -18,7 +18,7 @@ import HomeItem from '../components/HomeItem';
 import HomeItemAdd from '../components/HomeItemAdd';
 import NotToDoBox from '../components/NotToDoBox';
 import {useUserContext} from '../contexts/UserContext';
-import {getSummary} from '../lib/summary';
+import {getBaby} from '../lib/baby';
 
 //TODO
 //1. Pressable 클릭 시 메시지 스크린으로 이동
@@ -32,7 +32,7 @@ function HomeScreen() {
 
   const [babyInfo, setBabyInfo] = useState();
   // eslint-disable-next-line no-unused-vars
-  const [todos, setTodos] = useState('dd');
+  const [todos, setTodos] = useState([]);
 
   //날짜 표시
   const today = new Date();
@@ -45,7 +45,7 @@ function HomeScreen() {
 
   useEffect(() => {
     const code = user.id;
-    getSummary({code}).then(setBabyInfo);
+    getBaby({code}).then(setBabyInfo);
   }, [user.id]);
 
   return (
@@ -82,7 +82,7 @@ function HomeScreen() {
         </Pressable> */}
 
         <Text style={styles.titleText}>이번 주 주요 일정</Text>
-        {todos ? (
+        {todos.length ? (
           <FlatList
             style={styles.todoContainer}
             data={todos}
@@ -127,7 +127,6 @@ const renderTodayInfo = ({item}) => {
   return (
     <HomeItem
       width={width - 50}
-      id={item.id}
       name={item.name}
       birthYear={item.birthYear}
       birthMonth={item.birthMonth}
@@ -136,12 +135,6 @@ const renderTodayInfo = ({item}) => {
       monthsAfterBirth={item.monthsAfterBirth}
       age={item.age}
       order={item.order}
-      eatCount={item.eatCount}
-      sleepCount={item.sleepCount}
-      toiletCount={item.toiletCount}
-      lastEatTime={item.lastEatTime}
-      lastSleepTime={item.lastSleepTime}
-      lastToiletTime={item.lastToiletTime}
     />
   );
 };
