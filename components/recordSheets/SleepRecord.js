@@ -10,10 +10,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
-import {useUserContext} from '../../contexts/UserContext';
 
+import {useUserContext} from '../../contexts/UserContext';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
+import {updateSummary} from '../../lib/summary';
 
 const categoryChips = [
   {id: 1, content: '낮잠'},
@@ -51,6 +52,8 @@ function SleepRecord({order, onSubmit}) {
       endDate,
       memo,
     });
+
+    updateSummary({code, order});
   }, [
     onSubmit,
     order,

@@ -12,9 +12,13 @@ function HomeItem({
   daysAfterBirth, //태어난지 n일째
   monthsAfterBirth, //태어난지 n개월째
   age, //나이
-  // height, //키
-  // weight, //몸무게
-  // image, //사진
+
+  eatCount,
+  sleepCount,
+  toiletCount,
+  lastEatTime,
+  lastSleepTime,
+  lastToiletTime,
 }) {
   return (
     <View style={[styles.container, styles.boxShadow]} width={width}>
@@ -43,9 +47,9 @@ function HomeItem({
           source={require('../assets/milk.png')}
         />
         <View style={styles.flexDirection}>
-          <Text style={styles.mainText}>밥을 n끼 먹었어요</Text>
+          <Text style={styles.mainText}>밥을 {eatCount} 끼 먹었어요</Text>
           <Text style={styles.subText}>
-            마지막 섭취 시간: 오후 n시 nn분 (n시간 전)
+            마지막 섭취 시간: {lastEatTime} (n시간 전)
           </Text>
         </View>
       </View>
@@ -55,9 +59,11 @@ function HomeItem({
           source={require('../assets/diaper.png')}
         />
         <View style={styles.flexDirection}>
-          <Text style={styles.mainText}>기저귀를 n번 교체했어요</Text>
+          <Text style={styles.mainText}>
+            기저귀를 {toiletCount} 회 교체했어요
+          </Text>
           <Text style={styles.subText}>
-            마지막 교체 시간: 오후 n시 nn분 (n시간 전)
+            마지막 교체 시간: {lastToiletTime} (n시간 전)
           </Text>
         </View>
       </View>
@@ -67,9 +73,9 @@ function HomeItem({
           source={require('../assets/sleeping.png')}
         />
         <View style={styles.flexDirection}>
-          <Text style={styles.mainText}>잠을 n시간 잤어요</Text>
+          <Text style={styles.mainText}>잠을 {sleepCount} 번 잤어요</Text>
           <Text style={styles.subText}>
-            마지막 잠든 시간: 오후 n시 nn분 (n시간 전)
+            마지막 잠든 시간: {lastSleepTime} (n시간 전)
           </Text>
         </View>
       </View>

@@ -14,6 +14,7 @@ import {Chip} from 'react-native-paper';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createToiletRecord} from '../../lib/records';
+import {updateSummary} from '../../lib/summary';
 
 const categoryChips = [
   {id: 1, content: '소변'},
@@ -64,6 +65,8 @@ function ToiletRecord({order, onSubmit}) {
     }).catch(error => {
       console.log(error.message);
     });
+
+    updateSummary({code, order});
   }, [
     onSubmit,
     order,

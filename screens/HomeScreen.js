@@ -18,7 +18,7 @@ import HomeItem from '../components/HomeItem';
 import HomeItemAdd from '../components/HomeItemAdd';
 import NotToDoBox from '../components/NotToDoBox';
 import {useUserContext} from '../contexts/UserContext';
-import {getBaby} from '../lib/baby';
+import {getSummary} from '../lib/summary';
 
 //TODO
 //1. Pressable 클릭 시 메시지 스크린으로 이동
@@ -45,7 +45,7 @@ function HomeScreen() {
 
   useEffect(() => {
     const code = user.id;
-    getBaby({code}).then(setBabyInfo);
+    getSummary({code}).then(setBabyInfo);
   }, [user.id]);
 
   return (
@@ -135,6 +135,13 @@ const renderTodayInfo = ({item}) => {
       daysAfterBirth={item.daysAfterBirth}
       monthsAfterBirth={item.monthsAfterBirth}
       age={item.age}
+      order={item.order}
+      eatCount={item.eatCount}
+      sleepCount={item.sleepCount}
+      toiletCount={item.toiletCount}
+      lastEatTime={item.lastEatTime}
+      lastSleepTime={item.lastSleepTime}
+      lastToiletTime={item.lastToiletTime}
     />
   );
 };
