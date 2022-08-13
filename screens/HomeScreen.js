@@ -21,6 +21,7 @@ import HomeItemAdd from '../components/HomeItemAdd';
 import NotToDoBox from '../components/NotToDoBox';
 import {useUserContext} from '../contexts/UserContext';
 import {getBaby} from '../lib/baby';
+import {signOut} from '../lib/auth';
 
 //TODO
 //1. Pressable 클릭 시 메시지 스크린으로 이동
@@ -31,7 +32,9 @@ const {width} = Dimensions.get('window');
 function HomeScreen() {
   //현재 로그인한 유저 정보를 담은 객체(user)
   const {user} = useUserContext();
-  const code = user.id;
+  const {setUser} = useUserContext();
+
+  const code = user.code;
 
   const [babyInfo, setBabyInfo] = useState();
   // eslint-disable-next-line no-unused-vars
@@ -63,6 +66,11 @@ function HomeScreen() {
     });
   }, []);
 
+  const onLogout = async () => {
+    await signOut();
+    setUser(null);
+  };
+
   return (
     <SafeAreaView style={styles.block}>
       <ScrollView
@@ -84,6 +92,7 @@ function HomeScreen() {
             style={styles.msgIcon}
             onPress={() => {
               console.log('pressed chat icon'); //구현 필요
+              onLogout(); // 임시 로그아웃 조치
             }}>
             <Icon name={'chatbubbles-outline'} size={30} />
           </Pressable>

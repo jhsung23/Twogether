@@ -1,13 +1,5 @@
-import React, {useRef, useState} from 'react';
-import {
-  Alert,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import React from 'react';
+import {KeyboardAvoidingView, Platform, StyleSheet, Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SetupProfile from '../components/SetupProfile';
 
@@ -19,7 +11,9 @@ function WelcomeScreen() {
       behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.block}>
         <Text style={styles.title}>환영합니다!</Text>
-        <Text style={styles.description}>프로필을 설정하세요.</Text>
+        <Text style={styles.description}>
+          서비스 이용을 위한 프로필을 작성해주세요.
+        </Text>
         <SetupProfile />
       </SafeAreaView>
     </KeyboardAvoidingView>
@@ -35,14 +29,16 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 20,
   },
   title: {
-    fontSize: 48,
+    fontSize: 25,
+    fontWeight: 'bold',
     color: '#494949',
   },
   description: {
-    marginTop: 16,
-    fontSize: 21,
+    marginTop: 5,
+    fontSize: 16,
     color: '#757575',
   },
 });

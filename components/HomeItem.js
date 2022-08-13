@@ -23,19 +23,19 @@ function HomeItem({
   const [sleep, setSleep] = useState();
 
   useEffect(() => {
-    const code = user.id;
+    const code = user.code;
 
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
-  }, [user.id, order]);
+  }, [user.code, order]);
 
   return (
     <View style={[styles.container, styles.boxShadow]} width={width}>
       <View style={styles.babyInfoContainer}>
         <Image
           style={styles.babyPhoto}
-          source={require('../assets/user.png')}
+          source={require('../assets/baby.png')}
         />
 
         <View style={styles.babyInfo}>
@@ -157,7 +157,6 @@ const styles = StyleSheet.create({
   babyPhoto: {
     resizeMode: 'cover',
     overflow: 'hidden',
-    backgroundColor: '#cdcdcd',
     borderRadius: 64,
     marginRight: 15,
     width: 50,
