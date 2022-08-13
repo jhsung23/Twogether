@@ -48,7 +48,7 @@ function ToiletRecord({order, onSubmit}) {
   const submit = useCallback(async () => {
     onSubmit(); //close modal
 
-    const code = user.id;
+    const code = user.code;
     const writer = user.displayName;
     const what = category[selectedCategory];
     const how = vol[selectedVol];
@@ -67,7 +67,7 @@ function ToiletRecord({order, onSubmit}) {
   }, [
     onSubmit,
     order,
-    user.id,
+    user.code,
     user.displayName,
     selectedCategory,
     selectedVol,

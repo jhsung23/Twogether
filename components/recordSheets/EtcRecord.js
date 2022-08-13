@@ -44,7 +44,7 @@ function EtcRecord({order, onSubmit}) {
   const submit = useCallback(async () => {
     onSubmit();
 
-    const code = user.id;
+    const code = user.code;
     const writer = user.displayName;
     const what = category[selectedCategory];
 
@@ -60,7 +60,7 @@ function EtcRecord({order, onSubmit}) {
   }, [
     onSubmit,
     order,
-    user.id,
+    user.code,
     user.displayName,
     selectedCategory,
     startDate,

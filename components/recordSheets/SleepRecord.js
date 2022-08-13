@@ -38,7 +38,7 @@ function SleepRecord({order, onSubmit}) {
   const submit = useCallback(async () => {
     onSubmit();
 
-    const code = user.id; //공유 코드
+    const code = user.code; //공유 코드
     const writer = user.displayName;
     const what = category[selectedCategory];
 
@@ -54,7 +54,7 @@ function SleepRecord({order, onSubmit}) {
   }, [
     onSubmit,
     order,
-    user.id,
+    user.code,
     user.displayName,
     selectedCategory,
     startDate,

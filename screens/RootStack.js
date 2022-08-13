@@ -20,7 +20,7 @@ function RootStack() {
       if (!currentUser) {
         return;
       }
-      const profile = await getUser(currentUser.uid);
+      const profile = await getUser({id: currentUser.uid});
       if (!profile) {
         return;
       }

@@ -43,13 +43,14 @@ function SignInScreen({navigation, route}) {
 
     try {
       const {user} = isSignUp ? await signUp(info) : await signIn(info);
-      const profile = await getUser(user.uid);
+      const profile = await getUser({id: user.uid});
 
       //navigation.navigate('MainTab', {uid: user.uid});
       if (!profile) {
         //사용자가 존재하지 않을때
         navigation.navigate('Welcome', {uid: user.uid});
       } else {
+        console.log(profile);
         setUser(profile); //로그인했을때 프로필이 존재하면 setUser 호출
       }
       setUser(profile);

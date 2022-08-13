@@ -54,7 +54,7 @@ function EatingRecord({order, onSubmit}) {
   const submit = useCallback(async () => {
     onSubmit(); //close modal
 
-    const code = user.id; //공유 코드
+    const code = user.code; //공유 코드
     const writer = user.displayName;
     const what = food[selectedFood];
     const how = vol[selectedVol];
@@ -73,7 +73,7 @@ function EatingRecord({order, onSubmit}) {
   }, [
     onSubmit,
     order,
-    user.id,
+    user.code,
     user.displayName,
     selectedFood,
     selectedVol,
