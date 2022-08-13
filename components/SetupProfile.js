@@ -102,16 +102,15 @@ function SetupProfile() {
     };
 
     await createUser(user);
-    setUser(user);
+    const userInfo = await getUser({id: uid});
 
-    console.log(selectedAnswer);
     if (selectedAnswer === 2) {
-      const userInfo = await getUser({id: uid});
       // eslint-disable-next-line no-shadow
       const code = userInfo.code;
 
-      createBaby({code, babyForm});
+      await createBaby({code, babyForm});
     }
+    setUser(userInfo);
   };
   const onCancel = () => {
     signOut();

@@ -50,8 +50,9 @@ function HomeScreen() {
   };
 
   useEffect(() => {
+    console.log('home');
     getBaby({code}).then(setBabyInfo);
-  }, [code, babyInfo]);
+  }, [code]);
 
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
