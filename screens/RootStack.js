@@ -1,5 +1,7 @@
 import React, {useEffect} from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import SplashScreen from 'react-native-splash-screen';
+
 import MainTab from './MainTab';
 import SignInScreen from './SignInScreen';
 import {useUserContext} from '../contexts/UserContext';
@@ -18,6 +20,7 @@ function RootStack() {
     const unsubscribe = subscribeAuth(async currentUser => {
       unsubscribe();
       if (!currentUser) {
+        SplashScreen.hide();
         return;
       }
       const profile = await getUser({id: currentUser.uid});
