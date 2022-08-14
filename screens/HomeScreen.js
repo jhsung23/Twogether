@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import Icon from 'react-native-vector-icons/Ionicons';
+import SplashScreen from 'react-native-splash-screen';
 
 // eslint-disable-next-line no-unused-vars
 import NoticeMsgBox from '../components/NoticeMsgBox';
@@ -39,6 +40,7 @@ function HomeScreen() {
   const [babyInfo, setBabyInfo] = useState();
   // eslint-disable-next-line no-unused-vars
   const [todos, setTodos] = useState([]);
+  const babyInfoReady = babyInfo !== null;
 
   //날짜 표시
   const today = new Date();
@@ -53,6 +55,12 @@ function HomeScreen() {
     console.log('home');
     getBaby({code}).then(setBabyInfo);
   }, [code]);
+
+  useEffect(() => {
+    if (babyInfoReady) {
+      SplashScreen.hide();
+    }
+  }, [babyInfoReady]);
 
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
