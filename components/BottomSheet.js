@@ -5,14 +5,13 @@ import {
   Modal,
   Animated,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
   Dimensions,
   PanResponder,
+  Platform,
+  KeyboardAvoidingView,
 } from 'react-native';
-import {Header} from 'react-native/';
 
-const BottomSheet = ({modalVisible, onClose, children}) => {
+const BottomSheet = ({modalVisible, onClose, children, addTodo}) => {
   const screenHeight = Dimensions.get('screen').height;
 
   const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -73,17 +72,24 @@ const BottomSheet = ({modalVisible, onClose, children}) => {
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.background} />
         </TouchableWithoutFeedback>
-        {/* <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : null}> */}
-        <Animated.View
-          style={{
-            ...styles.bottomSheetContainer,
-            transform: [{translateY: translateY}],
-          }}
-          {...panResponders.panHandlers}>
-          {children}
-        </Animated.View>
-        {/* </KeyboardAvoidingView> */}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : null}>
+          <Animated.View
+            style={
+              addTodo
+                ? {
+                    ...styles.addTodo,
+                    transform: [{translateY: translateY}],
+                  }
+                : {
+                    ...styles.bottomSheetContainer,
+                    transform: [{translateY: translateY}],
+                  }
+            }
+            {...panResponders.panHandlers}>
+            {children}
+          </Animated.View>
+        </KeyboardAvoidingView>
       </View>
     </Modal>
   );
@@ -100,6 +106,13 @@ const styles = StyleSheet.create({
   },
   bottomSheetContainer: {
     height: 550,
+    padding: 30,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  addTodo: {
+    height: 225,
     padding: 30,
     backgroundColor: 'white',
     borderTopLeftRadius: 30,

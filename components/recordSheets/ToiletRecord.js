@@ -6,7 +6,8 @@ import {
   TextInput,
   Text,
   StyleSheet,
-  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
@@ -76,86 +77,84 @@ function ToiletRecord({order, onSubmit}) {
   ]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={styles.sheetWrapper}>
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> */}
-      {/* <> */}
-      <View style={styles.sheetHeader}>
-        <Text style={styles.sheetTitle}>배변 기록</Text>
-        <Pressable //체크 버튼
-          style={({pressed}) => [
-            Platform.OS === 'ios' && {
-              opacity: pressed ? 0.6 : 1,
-            },
-          ]}
-          android_ripple={{color: '#ededed'}}
-          onPress={() => {
-            submit(); //저장하기 함수
-          }}>
-          <Icon name="done" size={29} color={'#2dad3c'} />
-        </Pressable>
-      </View>
-
-      <Text style={styles.itemTitle}>무엇에 대한 기록인가요?</Text>
-      <View style={styles.chipWrapper}>
-        {categoryChips.map(({id, content}) => (
-          <Chip
-            key={id}
-            style={styles.chip}
-            textStyle={styles.chipText}
-            height={30}
-            icon={id === selectedCategory ? 'check' : null}
-            selected={id === selectedCategory}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View>
+        <View style={styles.sheetHeader}>
+          <Text style={styles.sheetTitle}>배변 기록</Text>
+          <Pressable //체크 버튼
+            style={({pressed}) => [
+              Platform.OS === 'ios' && {
+                opacity: pressed ? 0.6 : 1,
+              },
+            ]}
+            android_ripple={{color: '#ededed'}}
             onPress={() => {
-              if (id === selectedCategory) {
-                setSelectedCategory(null);
-              } else {
-                setSelectedCategory(id);
-              }
+              submit(); //저장하기 함수
             }}>
-            {content}
-          </Chip>
-        ))}
-      </View>
+            <Icon name="done" size={29} color={'#2dad3c'} />
+          </Pressable>
+        </View>
 
-      <Text style={styles.itemTitle}>양은 얼마나 되나요?</Text>
-      <View style={styles.chipWrapper}>
-        {volChips.map(({id, content}) => (
-          <Chip
-            key={id}
-            style={styles.chip}
-            textStyle={styles.chipText}
-            height={30}
-            icon={id === selectedVol ? 'check' : null}
-            selected={id === selectedVol}
-            onPress={() => {
-              if (id === selectedVol) {
-                setSelectedVol(null);
-              } else {
-                setSelectedVol(id);
-              }
-            }}>
-            {content}
-          </Chip>
-        ))}
-      </View>
+        <Text style={styles.itemTitle}>무엇에 대한 기록인가요?</Text>
+        <View style={styles.chipWrapper}>
+          {categoryChips.map(({id, content}) => (
+            <Chip
+              key={id}
+              style={styles.chip}
+              textStyle={styles.chipText}
+              height={30}
+              icon={id === selectedCategory ? 'check' : null}
+              selected={id === selectedCategory}
+              onPress={() => {
+                if (id === selectedCategory) {
+                  setSelectedCategory(null);
+                } else {
+                  setSelectedCategory(id);
+                }
+              }}>
+              {content}
+            </Chip>
+          ))}
+        </View>
 
-      <Text style={styles.itemTitle}>기저귀를 교체한 시간은 언제인가요?</Text>
-      <View style={styles.chipWrapper}>
-        <DatePickerModal date={date} onClick={setDate} />
-      </View>
+        <Text style={styles.itemTitle}>양은 얼마나 되나요?</Text>
+        <View style={styles.chipWrapper}>
+          {volChips.map(({id, content}) => (
+            <Chip
+              key={id}
+              style={styles.chip}
+              textStyle={styles.chipText}
+              height={30}
+              icon={id === selectedVol ? 'check' : null}
+              selected={id === selectedVol}
+              onPress={() => {
+                if (id === selectedVol) {
+                  setSelectedVol(null);
+                } else {
+                  setSelectedVol(id);
+                }
+              }}>
+              {content}
+            </Chip>
+          ))}
+        </View>
 
-      <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
-      <TextInput
-        style={styles.input}
-        multiline={true}
-        placeholder="특이사항을 남겨보세요"
-        textAlignVertical="top"
-        value={memo}
-        onChangeText={setMemo}
-      />
-      {/* </> */}
-      {/* /      // </TouchableWithoutFeedback> */}
-    </KeyboardAvoidingView>
+        <Text style={styles.itemTitle}>기저귀를 교체한 시간은 언제인가요?</Text>
+        <View style={styles.chipWrapper}>
+          <DatePickerModal date={date} onClick={setDate} />
+        </View>
+
+        <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          placeholder="특이사항을 남겨보세요"
+          textAlignVertical="top"
+          value={memo}
+          onChangeText={setMemo}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
