@@ -6,7 +6,8 @@ import {
   TextInput,
   Text,
   StyleSheet,
-  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
@@ -83,86 +84,84 @@ function HealthRecord({order, onSubmit}) {
   ]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={styles.sheetWrapper}>
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> */}
-      {/* <> */}
-      <View style={styles.sheetHeader}>
-        <Text style={styles.sheetTitle}>건강 기록(미구현)</Text>
-        <Pressable //체크 버튼
-          style={({pressed}) => [
-            Platform.OS === 'ios' && {
-              opacity: pressed ? 0.6 : 1,
-            },
-          ]}
-          android_ripple={{color: '#ededed'}}
-          onPress={() => {
-            onSubmit(); //close modal
-          }}>
-          <Icon name="done" size={29} color={'#2dad3c'} />
-        </Pressable>
-      </View>
-
-      <Text style={styles.itemTitle}>무엇을 먹었나요?</Text>
-      <View style={styles.chipWrapper}>
-        {foodChips.map(({id, content}) => (
-          <Chip
-            key={id}
-            style={styles.chip}
-            textStyle={styles.chipText}
-            height={30}
-            icon={id === selectedFood ? 'check' : null}
-            selected={id === selectedFood}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View>
+        <View style={styles.sheetHeader}>
+          <Text style={styles.sheetTitle}>건강 기록(미구현)</Text>
+          <Pressable //체크 버튼
+            style={({pressed}) => [
+              Platform.OS === 'ios' && {
+                opacity: pressed ? 0.6 : 1,
+              },
+            ]}
+            android_ripple={{color: '#ededed'}}
             onPress={() => {
-              if (id === selectedFood) {
-                setSelectedFood(null);
-              } else {
-                setSelectedFood(id);
-              }
+              onSubmit(); //close modal
             }}>
-            {content}
-          </Chip>
-        ))}
-      </View>
+            <Icon name="done" size={29} color={'#2dad3c'} />
+          </Pressable>
+        </View>
 
-      <Text style={styles.itemTitle}>얼마나 먹었나요?</Text>
-      <View style={styles.chipWrapper}>
-        {volChips.map(({id, content}) => (
-          <Chip
-            key={id}
-            style={styles.chip}
-            textStyle={styles.chipText}
-            height={30}
-            icon={id === selectedVol ? 'check' : null}
-            selected={id === selectedVol}
-            onPress={() => {
-              if (id === selectedVol) {
-                setSelectedVol(null);
-              } else {
-                setSelectedVol(id);
-              }
-            }}>
-            {content}
-          </Chip>
-        ))}
-      </View>
+        <Text style={styles.itemTitle}>무엇을 먹었나요?</Text>
+        <View style={styles.chipWrapper}>
+          {foodChips.map(({id, content}) => (
+            <Chip
+              key={id}
+              style={styles.chip}
+              textStyle={styles.chipText}
+              height={30}
+              icon={id === selectedFood ? 'check' : null}
+              selected={id === selectedFood}
+              onPress={() => {
+                if (id === selectedFood) {
+                  setSelectedFood(null);
+                } else {
+                  setSelectedFood(id);
+                }
+              }}>
+              {content}
+            </Chip>
+          ))}
+        </View>
 
-      <Text style={styles.itemTitle}>언제 먹었나요?</Text>
-      <View style={styles.chipWrapper}>
-        <DatePickerModal date={date} onClick={setDate} />
-      </View>
+        <Text style={styles.itemTitle}>얼마나 먹었나요?</Text>
+        <View style={styles.chipWrapper}>
+          {volChips.map(({id, content}) => (
+            <Chip
+              key={id}
+              style={styles.chip}
+              textStyle={styles.chipText}
+              height={30}
+              icon={id === selectedVol ? 'check' : null}
+              selected={id === selectedVol}
+              onPress={() => {
+                if (id === selectedVol) {
+                  setSelectedVol(null);
+                } else {
+                  setSelectedVol(id);
+                }
+              }}>
+              {content}
+            </Chip>
+          ))}
+        </View>
 
-      <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
-      <TextInput
-        style={styles.input}
-        multiline={true}
-        placeholder="특이사항을 남겨보세요"
-        textAlignVertical="top"
-        value={memo}
-        onChangeText={setMemo}
-      />
-      {/* </> */}
-      {/* /      // </TouchableWithoutFeedback> */}
-    </KeyboardAvoidingView>
+        <Text style={styles.itemTitle}>언제 먹었나요?</Text>
+        <View style={styles.chipWrapper}>
+          <DatePickerModal date={date} onClick={setDate} />
+        </View>
+
+        <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          placeholder="특이사항을 남겨보세요"
+          textAlignVertical="top"
+          value={memo}
+          onChangeText={setMemo}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 

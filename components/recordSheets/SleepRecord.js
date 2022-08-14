@@ -6,7 +6,8 @@ import {
   TextInput,
   Text,
   StyleSheet,
-  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
@@ -63,81 +64,79 @@ function SleepRecord({order, onSubmit}) {
   ]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" style={styles.sheetWrapper}>
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}> */}
-      {/* <> */}
-      <View style={styles.sheetHeader}>
-        <Text style={styles.sheetTitle}>수면 기록</Text>
-        <Pressable
-          style={({pressed}) => [
-            Platform.OS === 'ios' && {
-              opacity: pressed ? 0.6 : 1,
-            },
-          ]}
-          android_ripple={{color: '#ededed'}}
-          onPress={() => {
-            submit();
-          }}>
-          <Icon name="done" size={29} color={'#2dad3c'} />
-        </Pressable>
-      </View>
-
-      <Text style={styles.itemTitle}>언제 잔 잠인가요?</Text>
-      <View style={styles.chipWrapper}>
-        {categoryChips.map(({id, content}) => (
-          <Chip
-            key={id}
-            style={styles.chip}
-            textStyle={styles.chipText}
-            height={30}
-            icon={id === selectedCategory ? 'check' : null}
-            selected={id === selectedCategory}
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View>
+        <View style={styles.sheetHeader}>
+          <Text style={styles.sheetTitle}>수면 기록</Text>
+          <Pressable
+            style={({pressed}) => [
+              Platform.OS === 'ios' && {
+                opacity: pressed ? 0.6 : 1,
+              },
+            ]}
+            android_ripple={{color: '#ededed'}}
             onPress={() => {
-              if (id === selectedCategory) {
-                setSelectedCategory(null);
-              } else {
-                setSelectedCategory(id);
-              }
+              submit();
             }}>
-            {content}
-          </Chip>
-        ))}
-      </View>
-
-      <Text style={styles.itemTitle}>언제부터 언제까지 잠을 잤나요?</Text>
-      <View style={styles.startTimeViewWrapper}>
-        <Text style={styles.itemText}>잠든 시간</Text>
-        <View style={styles.itemChipWrapper}>
-          <DatePickerModal date={startDate} onClick={setStartDate} />
+            <Icon name="done" size={29} color={'#2dad3c'} />
+          </Pressable>
         </View>
-        <Text style={styles.itemText}>부터</Text>
-      </View>
-      <View style={styles.endTimeViewWrapper}>
-        <Text style={styles.itemText}>잠깬 시간</Text>
-        <View style={styles.itemChipWrapper}>
-          <DatePickerModal date={endDate} onClick={setEndDate} />
-        </View>
-        <Text style={styles.itemText}>까지</Text>
-        <Text
-          style={[
-            styles.itemText,
-            // eslint-disable-next-line react-native/no-inline-styles
-            {marginStart: 10},
-          ]}>{`( 약 ${timeDiff} 시간 )`}</Text>
-      </View>
 
-      <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
-      <TextInput
-        style={styles.input}
-        multiline={true}
-        placeholder="특이사항을 남겨보세요"
-        textAlignVertical="top"
-        value={memo}
-        onChangeText={setMemo}
-      />
-      {/* </> */}
-      {/* /      // </TouchableWithoutFeedback> */}
-    </KeyboardAvoidingView>
+        <Text style={styles.itemTitle}>언제 잔 잠인가요?</Text>
+        <View style={styles.chipWrapper}>
+          {categoryChips.map(({id, content}) => (
+            <Chip
+              key={id}
+              style={styles.chip}
+              textStyle={styles.chipText}
+              height={30}
+              icon={id === selectedCategory ? 'check' : null}
+              selected={id === selectedCategory}
+              onPress={() => {
+                if (id === selectedCategory) {
+                  setSelectedCategory(null);
+                } else {
+                  setSelectedCategory(id);
+                }
+              }}>
+              {content}
+            </Chip>
+          ))}
+        </View>
+
+        <Text style={styles.itemTitle}>언제부터 언제까지 잠을 잤나요?</Text>
+        <View style={styles.startTimeViewWrapper}>
+          <Text style={styles.itemText}>잠든 시간</Text>
+          <View style={styles.itemChipWrapper}>
+            <DatePickerModal date={startDate} onClick={setStartDate} />
+          </View>
+          <Text style={styles.itemText}>부터</Text>
+        </View>
+        <View style={styles.endTimeViewWrapper}>
+          <Text style={styles.itemText}>잠깬 시간</Text>
+          <View style={styles.itemChipWrapper}>
+            <DatePickerModal date={endDate} onClick={setEndDate} />
+          </View>
+          <Text style={styles.itemText}>까지</Text>
+          <Text
+            style={[
+              styles.itemText,
+              // eslint-disable-next-line react-native/no-inline-styles
+              {marginStart: 10},
+            ]}>{`( 약 ${timeDiff} 시간 )`}</Text>
+        </View>
+
+        <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
+        <TextInput
+          style={styles.input}
+          multiline={true}
+          placeholder="특이사항을 남겨보세요"
+          textAlignVertical="top"
+          value={memo}
+          onChangeText={setMemo}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
