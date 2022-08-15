@@ -15,6 +15,7 @@ import {Chip} from 'react-native-paper';
 import {createEatRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
+import events from '../../lib/events';
 
 const foodChips = [
   {id: 1, content: '모유'},
@@ -71,6 +72,8 @@ function EatingRecord({order, onSubmit}) {
     }).catch(error => {
       console.log(error.message);
     });
+
+    events.emit('refresh');
   }, [
     onSubmit,
     order,

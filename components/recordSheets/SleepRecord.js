@@ -15,6 +15,7 @@ import {Chip} from 'react-native-paper';
 import {useUserContext} from '../../contexts/UserContext';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
+import events from '../../lib/events';
 
 const categoryChips = [
   {id: 1, content: '낮잠'},
@@ -52,6 +53,8 @@ function SleepRecord({order, onSubmit}) {
       endDate,
       memo,
     });
+
+    events.emit('refresh');
   }, [
     onSubmit,
     order,

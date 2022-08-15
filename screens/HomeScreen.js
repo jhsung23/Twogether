@@ -81,7 +81,7 @@ function HomeScreen() {
     }
   }, [babyInfoReady]);
 
-  //페이지 당기면 reload (새로고침 기능 대체)
+  // 페이지 당기면 reload (새로고침 기능 대체)
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
@@ -94,6 +94,10 @@ function HomeScreen() {
       setRefreshing(false);
     });
   }, []);
+
+  // useEffect(() => {
+  //   setCount(!count);
+  // }, [setCount]);
 
   //임시 로그아웃 기능
   const onLogout = async () => {
