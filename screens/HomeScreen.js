@@ -12,22 +12,20 @@ import {
   DevSettings,
   Platform,
   LogBox,
+  Image,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
-import Icon from 'react-native-vector-icons/Ionicons';
 import SplashScreen from 'react-native-splash-screen';
 
-// eslint-disable-next-line no-unused-vars
-import NoticeMsgBox from '../components/NoticeMsgBox';
 import HomeItem from '../components/HomeItem';
 import HomeItemAdd from '../components/HomeItemAdd';
 import NotToDoBox from '../components/NotToDoBox';
 import {useUserContext} from '../contexts/UserContext';
 import {getBaby} from '../lib/baby';
-import {signOut} from '../lib/auth';
 import useModal from '../utils/modal';
 import BottomSheet from '../components/BottomSheet';
 import AddTodo from '../components/AddTodo';
+import events from '../lib/events';
 
 //TODO
 //1. Pressable 클릭 시 메시지 스크린으로 이동
@@ -38,7 +36,6 @@ const {width} = Dimensions.get('window');
 function HomeScreen() {
   //현재 로그인한 유저 정보를 담은 객체(user)
   const {user} = useUserContext();
-  const {setUser} = useUserContext();
 
   const code = user.code;
 
@@ -95,11 +92,17 @@ function HomeScreen() {
     });
   }, []);
 
-  //임시 로그아웃 기능
-  const onLogout = async () => {
-    await signOut();
-    setUser(null);
-  };
+  const updateBaby = useCallback(() => {
+    getBaby({code}).then(setBabyInfo);
+  }, [code]);
+
+  useEffect(() => {
+    events.addListener('updateBaby', updateBaby);
+
+    return () => {
+      events.removeListener('updateBaby', updateBaby);
+    };
+  }, [updateBaby]);
 
   //화면 구현
   return (
@@ -120,25 +123,16 @@ function HomeScreen() {
             </Text>
           </View>
 
-          <Pressable
-            style={styles.msgIcon}
-            onPress={() => {
-              console.log('pressed chat icon'); //구현 필요
-              onLogout(); // 임시 로그아웃 조치 -> 후에 삭제
-            }}>
-            <Icon name={'chatbubbles-outline'} size={30} />
-          </Pressable>
-        </View>
-
-        {/* <Pressable
-          onPress={() => {
-            console.log('pressed message alert(notice)'); //구현 필요
-          }}>
-          <NoticeMsgBox
-            color="#f2d46f"
-            text="상대방님이 남긴 메시지가 있어요"
+          <Image
+            style={styles.userPhoto}
+            source={
+              user.photoURL === null
+                ? require('../assets/user.png')
+                : {uri: user.photoURL}
+            }
+            resizeMode="cover"
           />
-        </Pressable> */}
+        </View>
 
         <Text style={styles.titleText}>이번 주 주요 일정</Text>
         <Pressable
@@ -248,8 +242,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
   },
-  msgIcon: {
-    marginEnd: 20,
+  userPhoto: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    marginEnd: 25,
     marginTop: 30,
   },
   list: {

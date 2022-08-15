@@ -1,20 +1,35 @@
 import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
-//TODO
-//Pressable onPress에 아기를 등록할 수 있도록 구현 필요
+import useModal from '../utils/modal';
+import BottomSheet from './BottomSheet';
+import RegisterBaby from './RegisterBaby';
 
 function HomeItemAdd({width}) {
+  const [isOpenModal, openModal, closeModal] = useModal();
+
+  const pressRegisterBaby = () => {
+    openModal();
+  };
+
   return (
-    <Pressable
-      style={[styles.container, styles.boxShadow]}
-      width={width}
-      onPress={() => console.log('pressed register baby')}>
-      <Icon name="add" color={'white'} size={80} />
-      <Text style={styles.text}>아기 등록하기</Text>
-    </Pressable>
+    <>
+      <Pressable
+        style={[styles.container, styles.boxShadow]}
+        width={width}
+        onPress={pressRegisterBaby}>
+        <Icon name="add" color={'white'} size={80} />
+        <Text style={styles.text}>아기 등록하기</Text>
+      </Pressable>
+      <BottomSheet
+        modalVisible={isOpenModal}
+        onClose={closeModal}
+        registerBaby={true}>
+        <RegisterBaby onSubmit={closeModal} />
+      </BottomSheet>
+    </>
   );
 }
 

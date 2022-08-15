@@ -11,7 +11,13 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 
-const BottomSheet = ({modalVisible, onClose, children, addTodo}) => {
+const BottomSheet = ({
+  modalVisible,
+  onClose,
+  children,
+  addTodo,
+  registerBaby,
+}) => {
   const screenHeight = Dimensions.get('screen').height;
 
   const panY = useRef(new Animated.Value(screenHeight)).current;
@@ -81,6 +87,11 @@ const BottomSheet = ({modalVisible, onClose, children, addTodo}) => {
                     ...styles.addTodo,
                     transform: [{translateY: translateY}],
                   }
+                : registerBaby
+                ? {
+                    ...styles.registerBaby,
+                    transform: [{translateY: translateY}],
+                  }
                 : {
                     ...styles.bottomSheetContainer,
                     transform: [{translateY: translateY}],
@@ -113,6 +124,13 @@ const styles = StyleSheet.create({
   },
   addTodo: {
     height: 225,
+    padding: 30,
+    backgroundColor: 'white',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  registerBaby: {
+    height: 360,
     padding: 30,
     backgroundColor: 'white',
     borderTopLeftRadius: 30,
