@@ -8,17 +8,30 @@
     android:layout_gravity="center_horizontal">
 
     <TextView
-        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Together"
-        android:textStyle="bold"
-        android:textColor="#000000"
+        android:text="함께 기록하는\n우리 아기 육아 메모장"
+        android:id="@+id/description"
+        android:textSize="15dp"
+        android:textColor="#454545"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/imageView"
-        android:textSize="50dp"/>
+        android:textAlignment="center"
+        android:layout_marginTop="150dp"
+        app:layout_constraintBottom_toTopOf="@id/title"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Twogether"
+        android:textColor="#000000"
+        android:textSize="50dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -28,7 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
+        android:layout_marginBottom="130dp"
         app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

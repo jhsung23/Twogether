@@ -3,6 +3,7 @@ import {
   StyleSheet,
   SafeAreaView,
   View,
+  Platform,
   Pressable,
   Text,
   ToastAndroid,
@@ -32,7 +33,9 @@ function MypageScreen() {
 
   const copyToClipboard = () => {
     Clipboard.setString(code); //초대코드 복사
-    ToastAndroid.show('초대코드가 복사되었습니다', ToastAndroid.SHORT);
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('초대코드가 복사되었습니다', ToastAndroid.SHORT);
+    }
   };
 
   //임시 로그아웃 기능

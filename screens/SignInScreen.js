@@ -75,7 +75,7 @@ function SignInScreen({navigation, route}) {
       style={styles.KeyboardAvoidingView}
       behavior={Platform.select({ios: 'padding'})}>
       <SafeAreaView style={styles.fullscreen}>
-        <Text style={styles.text}>Together</Text>
+        <Text style={styles.text}>Twogether</Text>
         <View style={styles.form}>
           <SignInForm
             isSignUp={isSignUp}
