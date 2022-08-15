@@ -8,20 +8,22 @@ import {
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
+import {updateBadgeAchieve} from '../../lib/badge';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createEtcRecord} from '../../lib/records';
+import events from '../../lib/events';
 
 const categoryChips = [
   {id: 1, content: '체험'},
   {id: 2, content: '학습'},
   {id: 3, content: '신체활동'},
   {id: 4, content: '소풍'},
-  {id: 5, content: '검진'},
 ];
 
 const category = {
@@ -29,7 +31,13 @@ const category = {
   2: '학습',
   3: '신체활동',
   4: '소풍',
-  5: '검진',
+};
+
+const badgeNumber = {
+  1: '5',
+  2: '8',
+  3: '9',
+  4: '10',
 };
 
 function EtcRecord({order, onSubmit}) {
@@ -45,6 +53,7 @@ function EtcRecord({order, onSubmit}) {
   const submit = useCallback(async () => {
     onSubmit();
 
+    const id = user.id;
     const code = user.code;
     const writer = user.displayName;
     const what = category[selectedCategory];
@@ -57,10 +66,28 @@ function EtcRecord({order, onSubmit}) {
       startDate,
       endDate,
       memo,
+    }).catch(error => {
+      console.log(error.message);
     });
+
+    await updateBadgeAchieve({
+      id,
+      badgeNumber: badgeNumber[selectedCategory],
+    }).catch(error => {
+      console.log(error.message);
+    });
+
+    events.emit('badgeUpdate');
+
+    Alert.alert(
+      '🎉축하합니다!🎉',
+      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+      [{text: '확인', onPress: () => {}, style: 'cancel'}],
+    );
   }, [
     onSubmit,
     order,
+    user.id,
     user.code,
     user.displayName,
     selectedCategory,

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
@@ -16,6 +17,7 @@ import {createEatRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
+import {updateBadgeAchieve} from '../../lib/badge';
 
 const foodChips = [
   {id: 1, content: '모유'},
@@ -57,6 +59,7 @@ function EatingRecord({order, onSubmit}) {
     onSubmit(); //close modal
 
     const code = user.code; //공유 코드
+    const id = user.id; //uid
     const writer = user.displayName;
     const what = food[selectedFood];
     const how = vol[selectedVol];
@@ -73,11 +76,23 @@ function EatingRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    await updateBadgeAchieve({id, badgeNumber: 3}).catch(error => {
+      console.log(error.message);
+    });
+
     events.emit('refresh');
+    events.emit('badgeUpdate');
+
+    Alert.alert(
+      '🎉축하합니다!🎉',
+      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+      [{text: '확인', onPress: () => {}, style: 'cancel'}],
+    );
   }, [
     onSubmit,
     order,
     user.code,
+    user.id,
     user.displayName,
     selectedFood,
     selectedVol,

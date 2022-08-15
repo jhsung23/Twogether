@@ -35,8 +35,8 @@ function RecordScreen() {
       onPress: pressButton,
     },
     {
-      label: '건강 기록',
-      image: require('../assets/heartbeat.png'),
+      label: '병원 방문 기록',
+      image: require('../assets/hospital.png'),
       onPress: pressButton,
     },
     {
@@ -80,7 +80,7 @@ function RecordScreen() {
         {bottomSheetType === '기타 활동 기록' && (
           <EtcRecord order={1} onSubmit={closeModal} />
         )}
-        {bottomSheetType === '건강 기록' && (
+        {bottomSheetType === '병원 방문 기록' && (
           <HealthRecord order={1} onSubmit={closeModal} />
         )}
         {bottomSheetType === '수면 기록' && (

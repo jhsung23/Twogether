@@ -8,6 +8,8 @@ import {
   Pressable,
   View,
   Text,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import {Chip} from 'react-native-paper';
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -20,6 +22,20 @@ import CustomButton from './CustomButton';
 import {useUserContext} from '../contexts/UserContext';
 import RegisterBaby from './RegisterBaby';
 import {createBaby} from '../lib/baby';
+import {
+  createBadge1,
+  createBadge2,
+  createBadge3,
+  createBadge4,
+  createBadge5,
+  createBadge6,
+  createBadge7,
+  createBadge8,
+  createBadge9,
+  createBadge10,
+  createBadge11,
+  createBadge12,
+} from '../lib/badge';
 
 const roleChips = [
   {id: 1, content: '엄마'},
@@ -104,6 +120,22 @@ function SetupProfile() {
     await createUser(user);
     const userInfo = await getUser({id: uid});
 
+    //badge 등록
+    const id = userInfo.id;
+    console.log(id);
+    createBadge1({id});
+    createBadge2({id});
+    createBadge3({id});
+    createBadge4({id});
+    createBadge5({id});
+    createBadge6({id});
+    createBadge7({id});
+    createBadge8({id});
+    createBadge9({id});
+    createBadge10({id});
+    createBadge11({id});
+    createBadge12({id});
+
     if (selectedAnswer === 2) {
       // eslint-disable-next-line no-shadow
       const code = userInfo.code;
@@ -136,98 +168,108 @@ function SetupProfile() {
   };
 
   return (
-    <View style={styles.block}>
-      <Pressable onPress={onSelectImage}>
-        <Image
-          style={styles.circle}
-          source={
-            response
-              ? {uri: response?.assets[0]?.uri}
-              : require('../assets/user.png') //response값이 없으면 user.png를 보여줌
-          }
-        />
-      </Pressable>
-      <View style={styles.form}>
-        <BorderedInput
-          placeholder="성함"
-          placeholderTextColor="#919191"
-          onChangeText={setDisplayName}
-          value={displayName}
-          onSubmitEditing={onSubmit}
-          returnKeyType="next"
-        />
-        <View style={styles.chipWrapper}>
-          {roleChips.map(({id, content}) => (
-            <Chip
-              key={id}
-              style={styles.chip}
-              textStyle={styles.chipText}
-              height={30}
-              icon={id === selectedRole ? 'check' : null}
-              selected={id === selectedRole}
-              onPress={() => {
-                if (id === selectedRole) {
-                  setSelectedRole('');
-                } else {
-                  setSelectedRole(id);
-                }
-              }}>
-              {content}
-            </Chip>
-          ))}
-        </View>
-        <Text style={styles.questionText}>등록된 아기 정보가 있나요?</Text>
-        <View style={styles.chipWrapper}>
-          {answerChips.map(({id, content}) => (
-            <Chip
-              key={id}
-              style={styles.chip}
-              textStyle={styles.chipText}
-              height={30}
-              icon={id === selectedAnswer ? 'check' : null}
-              selected={id === selectedAnswer}
-              onPress={() => {
-                if (id === selectedAnswer) {
-                  setSelectedAnswer(null);
-                } else {
-                  setSelectedAnswer(id);
-                }
-              }}>
-              {content}
-            </Chip>
-          ))}
-        </View>
-        {!selectedAnswer ? null : selectedAnswer === 2 ? (
-          <>
-            <Text style={styles.questionText}>아기 정보를 등록해주세요.</Text>
-            <RegisterBaby babyForm={babyForm} onChange={updateBabyForm} />
-          </>
-        ) : (
-          <>
-            <Text style={styles.questionText}>
-              공동 양육자 코드를 입력해주세요.
-            </Text>
-            <BorderedInput
-              hasMarginTop
-              placeholder="코드 입력"
-              placeholderTextColor="#919191"
-              onChangeText={setCode}
-              value={code}
-              onSubmitEditing={onSubmit}
-              returnKeyType="next"
-            />
-          </>
-        )}
-        {loading ? (
-          <ActivityIndicator size={32} color="#FFDD95" style={styles.spinner} />
-        ) : (
-          <View style={styles.buttons}>
-            <CustomButton title="다음" onPress={onSubmit} hasMarginBottom />
-            <CustomButton title="취소" onPress={onCancel} theme="secondary" />
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      accessible={false}>
+      <View style={styles.block}>
+        <Pressable onPress={onSelectImage}>
+          <Image
+            style={styles.circle}
+            source={
+              response
+                ? {uri: response?.assets[0]?.uri}
+                : require('../assets/user.png') //response값이 없으면 user.png를 보여줌
+            }
+          />
+        </Pressable>
+        <View style={styles.form}>
+          <BorderedInput
+            placeholder="성함"
+            placeholderTextColor="#919191"
+            onChangeText={setDisplayName}
+            value={displayName}
+            onSubmitEditing={onSubmit}
+            returnKeyType="next"
+          />
+          <View style={styles.chipWrapper}>
+            {roleChips.map(({id, content}) => (
+              <Chip
+                key={id}
+                style={styles.chip}
+                textStyle={styles.chipText}
+                height={30}
+                icon={id === selectedRole ? 'check' : null}
+                selected={id === selectedRole}
+                onPress={() => {
+                  if (id === selectedRole) {
+                    setSelectedRole('');
+                  } else {
+                    setSelectedRole(id);
+                  }
+                }}>
+                {content}
+              </Chip>
+            ))}
           </View>
-        )}
+          <Text style={styles.questionText}>등록된 아기 정보가 있나요?</Text>
+          <View style={styles.chipWrapper}>
+            {answerChips.map(({id, content}) => (
+              <Chip
+                key={id}
+                style={styles.chip}
+                textStyle={styles.chipText}
+                height={30}
+                icon={id === selectedAnswer ? 'check' : null}
+                selected={id === selectedAnswer}
+                onPress={() => {
+                  if (id === selectedAnswer) {
+                    setSelectedAnswer(null);
+                  } else {
+                    setSelectedAnswer(id);
+                  }
+                }}>
+                {content}
+              </Chip>
+            ))}
+          </View>
+          {!selectedAnswer ? null : selectedAnswer === 2 ? (
+            <>
+              <Text style={styles.questionText}>아기 정보를 등록해주세요.</Text>
+              <RegisterBaby babyForm={babyForm} onChange={updateBabyForm} />
+            </>
+          ) : (
+            <>
+              <Text style={styles.questionText}>
+                공동 양육자 코드를 입력해주세요.
+              </Text>
+              <BorderedInput
+                hasMarginTop
+                placeholder="코드 입력"
+                placeholderTextColor="#919191"
+                onChangeText={setCode}
+                value={code}
+                onSubmitEditing={onSubmit}
+                returnKeyType="next"
+              />
+            </>
+          )}
+          {loading ? (
+            <ActivityIndicator
+              size={32}
+              color="#FFDD95"
+              style={styles.spinner}
+            />
+          ) : (
+            <View style={styles.buttons}>
+              <CustomButton title="다음" onPress={onSubmit} hasMarginBottom />
+              <CustomButton title="취소" onPress={onCancel} theme="secondary" />
+            </View>
+          )}
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 

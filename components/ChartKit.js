@@ -51,6 +51,7 @@ function ChartKit() {
         </View>
 
         <BarChart
+          fromZero={true}
           data={{
             //x축 이름
             labels: [
@@ -121,6 +122,7 @@ function ChartKit() {
         </View>
 
         <BarChart
+          fromZero={true}
           data={{
             //x축 이름
             labels: [

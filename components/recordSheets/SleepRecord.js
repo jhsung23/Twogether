@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
@@ -16,6 +17,7 @@ import {useUserContext} from '../../contexts/UserContext';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
 import events from '../../lib/events';
+import {updateBadgeAchieve} from '../../lib/badge';
 
 const categoryChips = [
   {id: 1, content: '낮잠'},
@@ -41,6 +43,7 @@ function SleepRecord({order, onSubmit}) {
     onSubmit();
 
     const code = user.code; //공유 코드
+    const id = user.id;
     const writer = user.displayName;
     const what = category[selectedCategory];
 
@@ -54,11 +57,24 @@ function SleepRecord({order, onSubmit}) {
       memo,
     });
 
+    await updateBadgeAchieve({id, badgeNumber: 2}).catch(error => {
+      console.log('update problem');
+      console.log(error.message);
+    });
+
     events.emit('refresh');
+    events.emit('badgeUpdate');
+
+    Alert.alert(
+      '🎉축하합니다!🎉',
+      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+      [{text: '확인', onPress: () => {}, style: 'cancel'}],
+    );
   }, [
     onSubmit,
     order,
     user.code,
+    user.id,
     user.displayName,
     selectedCategory,
     startDate,
