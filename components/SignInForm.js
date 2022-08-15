@@ -10,6 +10,7 @@ function SignInForm({isSignUp, onSubmit, form, createChangeTextHandler}) {
       <BorderedInput
         hasMarginBottom
         placeholder="이메일"
+        placeholderTextColor="#919191"
         value={form.email}
         onChangeText={createChangeTextHandler('email')}
         autoCapitalize="none" //첫번째 문자 자동 대문자 해제
@@ -21,6 +22,7 @@ function SignInForm({isSignUp, onSubmit, form, createChangeTextHandler}) {
       />
       <BorderedInput
         placeholder="비밀번호"
+        placeholderTextColor="#919191"
         hasMarginBottom={isSignUp}
         value={form.password}
         onChangeText={createChangeTextHandler('password')}
@@ -38,6 +40,7 @@ function SignInForm({isSignUp, onSubmit, form, createChangeTextHandler}) {
       {isSignUp && ( //회원가입이면 비밀번호 확인을 보여줌
         <BorderedInput
           placeholder="비밀번호 확인"
+          placeholderTextColor="#919191"
           value={form.confirmPassword}
           onChangeText={createChangeTextHandler('confirmPassword')}
           secureTextEntry

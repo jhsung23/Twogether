@@ -150,6 +150,7 @@ function SetupProfile() {
       <View style={styles.form}>
         <BorderedInput
           placeholder="성함"
+          placeholderTextColor="#919191"
           onChangeText={setDisplayName}
           value={displayName}
           onSubmitEditing={onSubmit}
@@ -209,6 +210,7 @@ function SetupProfile() {
             <BorderedInput
               hasMarginTop
               placeholder="코드 입력"
+              placeholderTextColor="#919191"
               onChangeText={setCode}
               value={code}
               onSubmitEditing={onSubmit}

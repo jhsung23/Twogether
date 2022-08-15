@@ -9,6 +9,7 @@ function RegisterBaby({babyForm, onChange}) {
           <TextInput
             style={styles.input}
             placeholder="아기 이름"
+            placeholderTextColor="#919191"
             value={babyForm.name}
             onChangeText={value => onChange('name', value)}
           />
@@ -16,6 +17,7 @@ function RegisterBaby({babyForm, onChange}) {
             // eslint-disable-next-line react-native/no-inline-styles
             style={[styles.input, {marginStart: 20}]}
             placeholder="몇째인가요?"
+            placeholderTextColor="#919191"
             keyboardType="numeric"
             value={babyForm.order}
             onChangeText={value => onChange('order', value)}
@@ -29,6 +31,7 @@ function RegisterBaby({babyForm, onChange}) {
           <TextInput
             style={styles.input}
             placeholder="생년"
+            placeholderTextColor="#919191"
             keyboardType="numeric"
             value={babyForm.birthYear}
             onChangeText={value => onChange('birthYear', value)}
@@ -39,6 +42,7 @@ function RegisterBaby({babyForm, onChange}) {
           <TextInput
             style={styles.input}
             placeholder="생월"
+            placeholderTextColor="#919191"
             keyboardType="numeric"
             value={babyForm.birthMonth}
             onChangeText={value => onChange('birthMonth', value)}
@@ -49,6 +53,7 @@ function RegisterBaby({babyForm, onChange}) {
           <TextInput
             style={styles.input}
             placeholder="생일"
+            placeholderTextColor="#919191"
             keyboardType="numeric"
             value={babyForm.birthDay}
             onChangeText={value => onChange('birthDay', value)}
@@ -61,6 +66,7 @@ function RegisterBaby({babyForm, onChange}) {
           <TextInput
             style={styles.input}
             placeholder="키"
+            placeholderTextColor="#919191"
             keyboardType="numeric"
             value={babyForm.height}
             onChangeText={value => onChange('height', value)}
@@ -71,6 +77,7 @@ function RegisterBaby({babyForm, onChange}) {
           <TextInput
             style={styles.input}
             placeholder="몸무게"
+            placeholderTextColor="#919191"
             keyboardType="numeric"
             value={babyForm.weight}
             onChangeText={value => onChange('weight', value)}
