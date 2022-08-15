@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {StyleSheet, View, Text, Image, ActivityIndicator} from 'react-native';
 
 import {useUserContext} from '../contexts/UserContext';
 import {getEat, getToilet, getSleep} from '../lib/records';
 import {formatTime} from '../utils/date';
+import events from '../lib/events';
 
 function HomeItem({
   width, // 컴포넌트(홈아이템) 가로 길이
@@ -21,14 +22,27 @@ function HomeItem({
   const [eat, setEat] = useState();
   const [toilet, setToilet] = useState();
   const [sleep, setSleep] = useState();
+  const code = user.code;
 
   useEffect(() => {
-    const code = user.code;
-
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
-  }, [user.code, order]);
+  }, [code, order]);
+
+  const refresh = useCallback(() => {
+    getEat({code, order}).then(setEat);
+    getToilet({code, order}).then(setToilet);
+    getSleep({code, order}).then(setSleep);
+  }, [code, order]);
+
+  useEffect(() => {
+    events.addListener('refresh', refresh);
+
+    return () => {
+      events.removeListener('refresh', refresh);
+    };
+  }, [refresh]);
 
   return (
     <View style={[styles.container, styles.boxShadow]} width={width}>
