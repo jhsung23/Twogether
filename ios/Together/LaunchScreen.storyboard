@@ -22,18 +22,31 @@
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="bmd-KQ-7N1">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" image="Image" translatesAutoresizingMaskIntoConstraints="NO" id="bmd-KQ-7N1">
                                 <rect key="frame" x="98" y="361" width="178" height="238"/>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lLi-LQ-13b" userLabel="함께 기록하는 우리 아기 육아 메모장">
+                                <rect key="frame" x="98" y="135" width="189" height="59"/>
+                                <string key="text">함께 기록하는
+우리 아기 육아 메모장</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="bmd-KQ-7N1" firstAttribute="top" secondItem="GJd-Yh-RWb" secondAttribute="bottom" constant="116" id="1eI-r2-VxY"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="bottom" secondItem="bmd-KQ-7N1" secondAttribute="bottom" constant="68" id="8vD-9F-Je7"/>
+                            <constraint firstItem="lLi-LQ-13b" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" constant="5" id="BDY-Zg-mcE"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="trailing" secondItem="bmd-KQ-7N1" secondAttribute="trailing" constant="99" id="CAG-mu-VHJ"/>
                             <constraint firstItem="bmd-KQ-7N1" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="98" id="Eye-FJ-XuX"/>
+                            <constraint firstItem="GJd-Yh-RWb" firstAttribute="top" secondItem="lLi-LQ-13b" secondAttribute="bottom" constant="8" symbolic="YES" id="Frb-wg-ack"/>
+                            <constraint firstItem="lLi-LQ-13b" firstAttribute="top" secondItem="Bcu-3y-fUS" secondAttribute="top" constant="135" id="N2z-KC-Uid"/>
                             <constraint firstItem="Bcu-3y-fUS" firstAttribute="centerX" secondItem="GJd-Yh-RWb" secondAttribute="centerX" id="Q3B-4B-g5h"/>
+                            <constraint firstItem="Bcu-3y-fUS" firstAttribute="trailing" secondItem="lLi-LQ-13b" secondAttribute="trailing" constant="88" id="Y2F-54-Iev"/>
+                            <constraint firstItem="lLi-LQ-13b" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" constant="98" id="dcX-kF-xQ8"/>
                             <constraint firstItem="GJd-Yh-RWb" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="bottom" multiplier="1/3" constant="1" id="moa-c2-u7t"/>
                             <constraint firstItem="GJd-Yh-RWb" firstAttribute="leading" secondItem="Bcu-3y-fUS" secondAttribute="leading" symbolic="YES" id="x7j-FC-K8j"/>
                         </constraints>
@@ -45,7 +58,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Image" width="106" height="133"/>
+        <image name="Image" width="106" height="133.5"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

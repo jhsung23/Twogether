@@ -8,77 +8,81 @@ import {
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
+import {updateBadgeAchieve} from '../../lib/badge';
 import {createHealthRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
+import events from '../../lib/events';
 
-const foodChips = [
-  {id: 1, content: '모유'},
-  {id: 2, content: '분유'},
-  {id: 3, content: '이유식'},
-  {id: 4, content: '미음'},
-  {id: 5, content: '기타'},
+const categoryChips = [
+  {id: 1, content: '외래진료'},
+  {id: 2, content: '검진'},
+  {id: 3, content: '예방접종'},
+  {id: 4, content: '기타'},
 ];
 
-const food = {
-  1: '모유',
-  2: '분유',
-  3: '이유식',
-  4: '미음',
-  5: '기타',
-};
-
-const volChips = [
-  {id: 1, content: '양 적음'},
-  {id: 2, content: '양 적당'},
-  {id: 3, content: '양 많음'},
-];
-
-const vol = {
-  1: '양 적음',
-  2: '양 적당',
-  3: '양 많음',
+const category = {
+  1: '외래진료',
+  2: '검진',
+  3: '예방접종',
+  4: '기타',
 };
 
 function HealthRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
-  const [selectedFood, setSelectedFood] = useState(null); //무엇을 먹었는지 what
-  const [selectedVol, setSelectedVol] = useState(null); //얼마나 먹었는지 how
-  const [date, setDate] = useState(new Date()); //언제 먹었는지 when
+  const [height, setHeight] = useState();
+  const [weight, setWeight] = useState();
+  const [selectedCategory, setSelectedCategory] = useState();
+  const [date, setDate] = useState(new Date()); //언제 다녀왔는지 when
   const [memo, setMemo] = useState(''); //기타 특이사항 memo
 
-  // eslint-disable-next-line no-unused-vars
   const submit = useCallback(async () => {
     onSubmit(); //close modal
 
-    const code = user.id; //공유 코드
+    const id = user.id; //uid
+    const code = user.code; //공유 코드
     const writer = user.displayName;
-    const what = food[selectedFood];
-    const how = vol[selectedVol];
+    const what = category[selectedCategory];
 
     await createHealthRecord({
       code,
       order,
       writer,
+      height,
+      weight,
       what,
-      how,
       date,
       memo,
     }).catch(error => {
       console.log(error.message);
     });
+
+    await updateBadgeAchieve({id, badgeNumber: 7}).catch(error => {
+      console.log(error.message);
+    });
+
+    events.emit('badgeUpdate');
+
+    Alert.alert(
+      '🎉축하합니다!🎉',
+      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+      [{text: '확인', onPress: () => {}, style: 'cancel'}],
+    );
   }, [
     onSubmit,
-    order,
     user.id,
+    user.code,
     user.displayName,
-    selectedFood,
-    selectedVol,
+    selectedCategory,
+    order,
+    height,
+    weight,
     date,
     memo,
   ]);
@@ -87,7 +91,7 @@ function HealthRecord({order, onSubmit}) {
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
       <View>
         <View style={styles.sheetHeader}>
-          <Text style={styles.sheetTitle}>건강 기록(미구현)</Text>
+          <Text style={styles.sheetTitle}>병원 방문 기록</Text>
           <Pressable //체크 버튼
             style={({pressed}) => [
               Platform.OS === 'ios' && {
@@ -96,27 +100,51 @@ function HealthRecord({order, onSubmit}) {
             ]}
             android_ripple={{color: '#ededed'}}
             onPress={() => {
-              onSubmit(); //close modal
+              submit(); //close modal
             }}>
             <Icon name="done" size={29} color={'#2dad3c'} />
           </Pressable>
         </View>
 
-        <Text style={styles.itemTitle}>무엇을 먹었나요?</Text>
+        <Text style={styles.itemTitle}>키와 몸무게를 적어주세요.</Text>
+        <View style={styles.wrapper}>
+          <>
+            <TextInput
+              style={styles.inputt}
+              placeholder="키"
+              placeholderTextColor="#919191"
+              value={height}
+              onChangeText={setHeight}
+            />
+            <Text style={styles.unitText}>cm</Text>
+            <TextInput
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={[styles.inputt, {marginStart: 20}]}
+              placeholder="몸무게"
+              placeholderTextColor="#919191"
+              keyboardType="numeric"
+              value={weight}
+              onChangeText={setWeight}
+            />
+            <Text style={styles.unitText}>kg</Text>
+          </>
+        </View>
+
+        <Text style={styles.itemTitle}>병원 방문 목적이 무엇인가요?</Text>
         <View style={styles.chipWrapper}>
-          {foodChips.map(({id, content}) => (
+          {categoryChips.map(({id, content}) => (
             <Chip
               key={id}
               style={styles.chip}
               textStyle={styles.chipText}
               height={30}
-              icon={id === selectedFood ? 'check' : null}
-              selected={id === selectedFood}
+              icon={id === selectedCategory ? 'check' : null}
+              selected={id === selectedCategory}
               onPress={() => {
-                if (id === selectedFood) {
-                  setSelectedFood(null);
+                if (id === selectedCategory) {
+                  setSelectedCategory(null);
                 } else {
-                  setSelectedFood(id);
+                  setSelectedCategory(id);
                 }
               }}>
               {content}
@@ -124,34 +152,12 @@ function HealthRecord({order, onSubmit}) {
           ))}
         </View>
 
-        <Text style={styles.itemTitle}>얼마나 먹었나요?</Text>
-        <View style={styles.chipWrapper}>
-          {volChips.map(({id, content}) => (
-            <Chip
-              key={id}
-              style={styles.chip}
-              textStyle={styles.chipText}
-              height={30}
-              icon={id === selectedVol ? 'check' : null}
-              selected={id === selectedVol}
-              onPress={() => {
-                if (id === selectedVol) {
-                  setSelectedVol(null);
-                } else {
-                  setSelectedVol(id);
-                }
-              }}>
-              {content}
-            </Chip>
-          ))}
-        </View>
-
-        <Text style={styles.itemTitle}>언제 먹었나요?</Text>
+        <Text style={styles.itemTitle}>언제 다녀왔나요?</Text>
         <View style={styles.chipWrapper}>
           <DatePickerModal date={date} onClick={setDate} />
         </View>
 
-        <Text style={styles.itemTitle}>기타 특이사항이 있나요?</Text>
+        <Text style={styles.itemTitle}>특이사항이 있나요?</Text>
         <TextInput
           style={styles.input}
           multiline={true}
@@ -218,6 +224,27 @@ const styles = StyleSheet.create({
     paddingEnd: 10,
     paddingBottom: 10,
     backgroundColor: '#f5f5f5',
+  },
+  wrapper: {
+    marginTop: 13,
+    flexDirection: 'row',
+    alignItems: 'baseline',
+  },
+  inputt: {
+    borderColor: '#F3F3F3',
+    borderWidth: 1,
+    flex: 1,
+    paddingHorizontal: 16,
+    height: 40,
+    backgroundColor: '#F3F3F3',
+    borderRadius: 15,
+    marginBottom: 25,
+  },
+  unitText: {
+    marginHorizontal: 10,
+    fontSize: 18,
+    color: '#454545',
+    paddingBottom: 7,
   },
 });
 

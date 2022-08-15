@@ -95,10 +95,6 @@ function HomeScreen() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   setCount(!count);
-  // }, [setCount]);
-
   //임시 로그아웃 기능
   const onLogout = async () => {
     await signOut();
@@ -275,7 +271,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginEnd: 20,
     marginBottom: 2,
-    color: '#454545',
+    color: '#7d7d7d',
   },
 });
 

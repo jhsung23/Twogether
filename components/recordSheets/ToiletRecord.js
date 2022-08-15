@@ -8,10 +8,12 @@ import {
   StyleSheet,
   Keyboard,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
+import {updateBadgeAchieve} from '../../lib/badge';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createToiletRecord} from '../../lib/records';
@@ -50,6 +52,7 @@ function ToiletRecord({order, onSubmit}) {
   const submit = useCallback(async () => {
     onSubmit(); //close modal
 
+    const id = user.id;
     const code = user.code;
     const writer = user.displayName;
     const what = category[selectedCategory];
@@ -67,10 +70,22 @@ function ToiletRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    await updateBadgeAchieve({id, badgeNumber: 4}).catch(error => {
+      console.log(error.message);
+    });
+
     events.emit('refresh');
+    events.emit('badgeUpdate');
+
+    Alert.alert(
+      '🎉축하합니다!🎉',
+      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+      [{text: '확인', onPress: () => {}, style: 'cancel'}],
+    );
   }, [
     onSubmit,
     order,
+    user.id,
     user.code,
     user.displayName,
     selectedCategory,
