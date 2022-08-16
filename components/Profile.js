@@ -83,10 +83,9 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     marginTop: 8,
-    alignItems: 'flex-start',
   },
   blank: {
-    width: 10,
+    width: 5,
   },
 });
 
