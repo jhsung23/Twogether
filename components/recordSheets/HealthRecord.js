@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
-import {updateBadgeAchieve} from '../../lib/badge';
+import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
 import {createHealthRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
@@ -63,17 +63,22 @@ function HealthRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    const state = await getBadgeAchieveState({id, badgeNumber: 7});
+
+    if (!state.achieve) {
+      Alert.alert(
+        '🎉축하합니다!🎉',
+        '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+        [{text: '확인', onPress: () => {}, style: 'cancel'}],
+      );
+    }
+
     await updateBadgeAchieve({id, badgeNumber: 7}).catch(error => {
       console.log(error.message);
     });
 
     events.emit('badgeUpdate');
-
-    Alert.alert(
-      '🎉축하합니다!🎉',
-      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
-      [{text: '확인', onPress: () => {}, style: 'cancel'}],
-    );
+    events.emit('recordScreenUpdate');
   }, [
     onSubmit,
     user.id,

@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
-import {updateBadgeAchieve} from '../../lib/badge';
+import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createEtcRecord} from '../../lib/records';
@@ -44,7 +44,7 @@ function EtcRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null); //what
-  const [startDate, setStartDate] = useState(new Date()); //whenStart
+  const [startDate, setStartDate] = useState(new Date()); //when Start
   const [endDate, setEndDate] = useState(new Date()); //whenEnd
   const [memo, setMemo] = useState(''); //memo
 
@@ -57,6 +57,7 @@ function EtcRecord({order, onSubmit}) {
     const code = user.code;
     const writer = user.displayName;
     const what = category[selectedCategory];
+    const diff = timeDiff;
 
     await createEtcRecord({
       code,
@@ -65,10 +66,24 @@ function EtcRecord({order, onSubmit}) {
       what,
       startDate,
       endDate,
+      diff,
       memo,
     }).catch(error => {
       console.log(error.message);
     });
+
+    const state = await getBadgeAchieveState({
+      id,
+      badgeNumber: badgeNumber[selectedCategory],
+    });
+
+    if (!state.achieve) {
+      Alert.alert(
+        '🎉축하합니다!🎉',
+        '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+        [{text: '확인', onPress: () => {}, style: 'cancel'}],
+      );
+    }
 
     await updateBadgeAchieve({
       id,
@@ -78,12 +93,7 @@ function EtcRecord({order, onSubmit}) {
     });
 
     events.emit('badgeUpdate');
-
-    Alert.alert(
-      '🎉축하합니다!🎉',
-      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
-      [{text: '확인', onPress: () => {}, style: 'cancel'}],
-    );
+    events.emit('recordScreenUpdate');
   }, [
     onSubmit,
     order,
@@ -93,6 +103,7 @@ function EtcRecord({order, onSubmit}) {
     selectedCategory,
     startDate,
     endDate,
+    timeDiff,
     memo,
   ]);
 

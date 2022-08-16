@@ -24,6 +24,7 @@
     "react-native": "0.69.1",
     "react-native-asset": "^2.0.1",
     "react-native-bouncy-checkbox": "^3.0.2",
+    "react-native-calendar-strip": "^2.2.6",
     "react-native-chart-kit": "^6.12.0",
     "react-native-date-picker": "^4.2.5",
     "react-native-floating-action-menu": "^1.2.4",

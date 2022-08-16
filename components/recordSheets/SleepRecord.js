@@ -17,7 +17,7 @@ import {useUserContext} from '../../contexts/UserContext';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
 import events from '../../lib/events';
-import {updateBadgeAchieve} from '../../lib/badge';
+import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
 
 const categoryChips = [
   {id: 1, content: '낮잠'},
@@ -33,7 +33,7 @@ function SleepRecord({order, onSubmit}) {
   const {user} = useUserContext();
 
   const [selectedCategory, setSelectedCategory] = useState(null); //what
-  const [startDate, setStartDate] = useState(new Date()); //whenStart
+  const [startDate, setStartDate] = useState(new Date()); //when Start
   const [endDate, setEndDate] = useState(new Date()); //whenEnd
   const [memo, setMemo] = useState(''); //memo
 
@@ -46,6 +46,7 @@ function SleepRecord({order, onSubmit}) {
     const id = user.id;
     const writer = user.displayName;
     const what = category[selectedCategory];
+    const diff = timeDiff;
 
     await createSleepRecord({
       code,
@@ -54,8 +55,19 @@ function SleepRecord({order, onSubmit}) {
       what,
       startDate,
       endDate,
+      diff,
       memo,
     });
+
+    const state = await getBadgeAchieveState({id, badgeNumber: 2});
+
+    if (!state.achieve) {
+      Alert.alert(
+        '🎉축하합니다!🎉',
+        '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+        [{text: '확인', onPress: () => {}, style: 'cancel'}],
+      );
+    }
 
     await updateBadgeAchieve({id, badgeNumber: 2}).catch(error => {
       console.log('update problem');
@@ -64,6 +76,7 @@ function SleepRecord({order, onSubmit}) {
 
     events.emit('refresh');
     events.emit('badgeUpdate');
+    events.emit('recordScreenUpdate');
 
     Alert.alert(
       '🎉축하합니다!🎉',
@@ -79,6 +92,7 @@ function SleepRecord({order, onSubmit}) {
     selectedCategory,
     startDate,
     endDate,
+    timeDiff,
     memo,
   ]);
 
