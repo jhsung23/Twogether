@@ -12,16 +12,10 @@ import {getUser} from '../lib/users';
 import {useUserContext} from '../contexts/UserContext';
 
 function Profile({userId}) {
-  //const [user, setUser] = useState(null);
-  //const [posts, setPosts] = useState(null);
-
   const {user} = useUserContext();
   const id = user.id;
   const code = user.code;
-
-  // useEffect(() => {
-  //   getUser(userId).then(setUser);
-  // }, [userId]);
+  const role = user.role;
 
   if (!user) {
     return (
@@ -34,20 +28,20 @@ function Profile({userId}) {
       style={styles.block}
       ListHeaderComponent={
         <View style={styles.userInfo}>
-          {/* <Avatar source={user.photoURL && {uri: user.photoURL}} size={128} />
-           */}
           <Image
             source={
               user.photoURL
                 ? {uri: user.photoURL}
-                : require('../assets/user.png') //response값이 없으면 user.png를 보여줌
+                : require('../assets/user.png')
             }
             resizeMode="cover"
             style={styles.avatar}
           />
-
-          <Text style={styles.username}>{user.displayName}</Text>
-          {/* <Text style={styles.username}>{user.code}</Text> */}
+          <View style={styles.row}>
+            <Text style={styles.role}>{user.role}</Text>
+            <Text style={styles.blank}> </Text>
+            <Text style={styles.username}>{user.displayName}</Text>
+          </View>
         </View>
       }
     />
@@ -70,7 +64,7 @@ const styles = StyleSheet.create({
   },
 
   username: {
-    marginTop: 8,
+    paddingTop: 8,
     fontSize: 22,
     color: '#424242',
   },
@@ -78,6 +72,21 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 96 / 2,
+  },
+  role: {
+    padding: 8,
+    fontSize: 18,
+    color: '#424242',
+    backgroundColor: '#EEF5E4',
+    borderRadius: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    marginTop: 8,
+    alignItems: 'flex-start',
+  },
+  blank: {
+    width: 10,
   },
 });
 

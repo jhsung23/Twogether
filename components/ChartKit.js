@@ -86,15 +86,15 @@ function ChartKit() {
               // format(add(date, {days: -4}), 'MM.dd', {
               //   locale: ko,
               // }),
-              // format(add(date, {days: -3}), 'MM.dd', {
-              //   locale: ko,
-              // }),
-              // format(add(date, {days: -2}), 'MM.dd', {
-              //   locale: ko,
-              // }),
-              // format(add(date, {days: -1}), 'MM.dd', {
-              //   locale: ko,
-              // }),
+              format(add(date, {days: -3}), 'MM.dd', {
+                locale: ko,
+              }),
+              format(add(date, {days: -2}), 'MM.dd', {
+                locale: ko,
+              }),
+              format(add(date, {days: -1}), 'MM.dd', {
+                locale: ko,
+              }),
               format(date, 'MM.dd', {
                 locale: ko,
               }),
@@ -104,12 +104,11 @@ function ChartKit() {
                 //표시할 값
                 data: [
                   //Math.random() * 100,
-                  // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
-                  //주석처리하고 돌린후 주석풀면 나타남 안그럼 오류..
+                  8,
+                  8,
+                  9,
                   !eat ? 0 : eat.length ? eat.length : 0,
 
-                  //eat.length,
-                  //4,
                   // 14, 15, 14, 15, 16, 14, 13,
                 ],
               },
@@ -126,7 +125,9 @@ function ChartKit() {
             backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
             backgroundGradientTo: '#ffffff', //오른쪽 색
             decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
+            color: (opacity = 10) => `rgba(56, 168,0, ${opacity})`, //막대, 점선 색
+            // color: { rgba(56, 168,0 )}, //막대, 점선 색
+            // labelColor: rgba(0, 0, 0, ${opacity}), //글자 색
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
             barPercentage: 0.8, //막대 너비
             style: {
@@ -153,6 +154,15 @@ function ChartKit() {
           data={{
             //x축 이름
             labels: [
+              format(add(date, {days: -3}), 'MM.dd', {
+                locale: ko,
+              }),
+              format(add(date, {days: -2}), 'MM.dd', {
+                locale: ko,
+              }),
+              format(add(date, {days: -1}), 'MM.dd', {
+                locale: ko,
+              }),
               format(date, 'MM.dd', {
                 locale: ko,
               }),
@@ -162,9 +172,10 @@ function ChartKit() {
                 //표시할 값
                 data: [
                   //Math.random() * 100,
-                  // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
                   //1, 2, 1, 1, 1, 2, 2,
-
+                  4,
+                  5,
+                  4,
                   !toilet ? 0 : toilet.length ? toilet.length : 0,
                 ],
               },
@@ -181,7 +192,7 @@ function ChartKit() {
             backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
             backgroundGradientTo: '#ffffff', //오른쪽 색
             decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
+            color: (opacity = 1) => `rgba(235, 75, 125, ${opacity})`, //막대, 점선 색
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
             barPercentage: 0.8, //막대 너비
             style: {
@@ -208,6 +219,15 @@ function ChartKit() {
           data={{
             //x축 이름
             labels: [
+              format(add(date, {days: -3}), 'MM.dd', {
+                locale: ko,
+              }),
+              format(add(date, {days: -2}), 'MM.dd', {
+                locale: ko,
+              }),
+              format(add(date, {days: -1}), 'MM.dd', {
+                locale: ko,
+              }),
               format(date, 'MM.dd', {
                 locale: ko,
               }),
@@ -217,8 +237,10 @@ function ChartKit() {
                 //표시할 값
                 data: [
                   //Math.random() * 100,
-                  // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
                   //2, 2, 4, 2, 3, 4, 4,
+                  5,
+                  4,
+                  5,
                   !sleep ? 0 : sleep.length ? sleep.length : 0,
                 ],
               },
@@ -228,14 +250,14 @@ function ChartKit() {
           width={Dimensions.get('window').width} // 화면 너비만큼 채우기
           height={200} //그래프 높이
           // yAxisLabel="$" //y축 첫글자
-          yAxisSuffix="시간" //y축 끝글자
+          yAxisSuffix="번" //y축 끝글자
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: '#e26a00',
             backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
             backgroundGradientTo: '#ffffff', //오른쪽 색
             decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
+            color: (opacity = 1) => `rgba(52, 130, 208, ${opacity})`, //막대, 점선 색
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
             barPercentage: 0.8, //막대 너비
             style: {
@@ -275,6 +297,7 @@ const styles = StyleSheet.create({
     color: 'black',
     marginTop: 25,
     marginBottom: 5,
+    marginLeft: 10,
   },
   block: {
     width: '70%',
