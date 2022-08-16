@@ -26,14 +26,6 @@ import {getAllRecordWithDate} from '../lib/records';
 import RecordItem from '../components/RecordItem';
 import events from '../lib/events';
 
-//TODO
-//해당하는 아기에 대한 기록을 추가할 수 있도록
-//바텀시트에게 현재 record screen에 보여지는
-//아기에 대한 정보(order:1(첫째), 2(둘째) 등)를 넘겨주어야 함.
-//그래야 바텀시트에서 기록을 저장할 때
-//해당 아기의 데이터베이스로 정보가 저장됨.
-//-> 해당 부분 현재는 숫자 1로 하드코딩 되어 있으며 레코드 스크린 ui 구현 후에 변경해야 함.
-
 const orderKor = [{1: '첫째'}, {2: '둘째'}, {3: '셋째'}, {4: '넷째'}];
 
 function RecordScreen() {
@@ -176,7 +168,7 @@ function RecordScreen() {
             source={require('../assets/box.png')}
           />
           <Text style={styles.noneText}>
-            선택한 날짜에{'\n'}기록된 내용이 없어요
+            해당 날짜에{'\n'}기록한 내용이 없습니다
           </Text>
         </View>
       ) : (
