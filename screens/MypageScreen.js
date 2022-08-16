@@ -1,12 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
   View,
   Platform,
-  Pressable,
   Text,
   ToastAndroid,
+  FlatList,
   TouchableOpacity,
 } from 'react-native';
 import {useEffect} from 'react';
@@ -15,6 +15,8 @@ import Profile from '../components/Profile';
 import {useUserContext} from '../contexts/UserContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {signOut} from '../lib/auth';
+import BabyProfile from '../components/BabyProfile';
+import {getBaby} from '../lib/baby';
 
 function MypageScreen() {
   const route = useRoute();
@@ -25,11 +27,18 @@ function MypageScreen() {
   const {setUser} = useUserContext();
   const code = user.code;
 
+  const [babyInfo, setBabyInfo] = useState();
+
   useEffect(() => {
     navigation.setOptions({
       title: displayName,
     });
   }, [navigation, displayName]);
+
+  //아기 정보 가져오기
+  useEffect(() => {
+    getBaby({code}).then(setBabyInfo);
+  }, [code]);
 
   const copyToClipboard = () => {
     Clipboard.setString(code); //초대코드 복사
@@ -48,30 +57,37 @@ function MypageScreen() {
     <SafeAreaView style={styles.block}>
       <Profile userId={userId} />
 
-      <View style={styles.bl} />
+      <View style={styles.line} />
 
-      <View style={styles.ff}>
+      <View style={styles.back1}>
         <View>
           <Text style={styles.menuText}>아이</Text>
+          <FlatList
+            data={babyInfo}
+            renderItem={renderTodayInfo}
+            keyExtractor={item => item.id}
+            showsHorizontalScrollIndicator={false}
+            horizontal={true}
+          />
         </View>
       </View>
 
-      <View style={styles.bl} />
-      <View style={styles.ff2}>
+      <View style={styles.line} />
+      <View style={styles.back2}>
         <View>
           <Text style={styles.menuText}>설정</Text>
         </View>
-        <View style={styles.bl} />
+        <View style={styles.line} />
         <View>
           <TouchableOpacity onPress={copyToClipboard}>
             <Text style={styles.menuText}>공동 양육자 초대하기</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.bl} />
+        <View style={styles.line} />
         <View>
           <Text style={styles.menuText}>알림 설정하기</Text>
         </View>
-        <View style={styles.bl} />
+        <View style={styles.line} />
 
         <View>
           <TouchableOpacity onPress={onLogout}>
@@ -82,6 +98,10 @@ function MypageScreen() {
     </SafeAreaView>
   );
 }
+
+const renderTodayInfo = ({item}) => {
+  return <BabyProfile name={item.name} age={item.age} order={item.order} />;
+};
 
 const styles = StyleSheet.create({
   block: {flex: 1, backgroundColor: 'white'},
@@ -94,15 +114,15 @@ const styles = StyleSheet.create({
     marginTop: 1,
     backgroundColor: '#f5f5f5',
   },
-  ff: {
+  back1: {
     flex: 1,
     backgroundColor: 'white',
   },
-  ff2: {
+  back2: {
     flex: 1.3,
     backgroundColor: 'white',
   },
-  bl: {
+  line: {
     flex: 0.01,
     backgroundColor: '#454545',
   },
@@ -115,20 +135,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  // blr: { //프로필에 적용해도 소용없음
-  //   flex: 5,
-  //   backgroundColor: 'white',
-  // },
-  // cc: {
-  //   flex: 0.7,
-  //   width: '100%',
-  //   height: 0,
-  //   justifyContent: 'center',
-  //   borderWidth: 2,
-  //   borderStyle: 'solid',
-  //   // borderStyle: 'dotted'
-  //   // borderStyle: 'dashed'
-  // },
 });
 
 export default MypageScreen;

@@ -6,7 +6,7 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from 'react-native-chart-kit';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {format, add} from 'date-fns';
 import {ko} from 'date-fns/locale';
 import {
@@ -19,17 +19,40 @@ import {
   Image,
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import {useUserContext} from '../contexts/UserContext';
+import {getEat, getToilet, getSleep} from '../lib/records';
 
 const screenWidth = Dimensions.get('window').width;
 
 function ChartKit() {
   const date = new Date();
 
+  const {user} = useUserContext();
+  const [eat, setEat] = useState();
+  const [toilet, setToilet] = useState();
+  const [sleep, setSleep] = useState();
+  const code = user.code;
+  const order = 1;
+
+  useEffect(() => {
+    getEat({code, order}).then(setEat);
+    getToilet({code, order}).then(setToilet);
+    getSleep({code, order}).then(setSleep);
+  }, [code, order]);
+
+  // useEffect(() => {
+  //   const fn = async () => {
+  //     await getEat({code, order}).then(setEat);
+  //     console.log(eat);
+  //     eat.length = eat.length === undefined ? 1 : eat.length;
+  //   };
+  //   fn();
+  // }, [code, order, eat]);
+
   return (
     <SafeAreaView style={styles.full}>
       <ScrollView>
-        <View style={styles.block}>
+        {/* <View style={styles.block}>
           <Image
             source={require('../assets/calendar.png')}
             style={styles.image}
@@ -44,35 +67,34 @@ function ChartKit() {
               locale: ko,
             })}
           </Text>
-        </View>
+        </View> */}
 
         <View style={styles.padding}>
-          <Text style={styles.title}>수면 시간</Text>
+          <Text style={styles.title}>섭취 횟수</Text>
         </View>
 
         <BarChart
-          fromZero={true}
           data={{
             //x축 이름
             labels: [
-              format(add(date, {days: -6}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -5}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -4}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -3}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -2}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -1}), 'MM.dd', {
-                locale: ko,
-              }),
+              // format(add(date, {days: -6}), 'MM.dd', {
+              //   locale: ko,
+              // }),
+              // format(add(date, {days: -5}), 'MM.dd', {
+              //   locale: ko,
+              // }),
+              // format(add(date, {days: -4}), 'MM.dd', {
+              //   locale: ko,
+              // }),
+              // format(add(date, {days: -3}), 'MM.dd', {
+              //   locale: ko,
+              // }),
+              // format(add(date, {days: -2}), 'MM.dd', {
+              //   locale: ko,
+              // }),
+              // format(add(date, {days: -1}), 'MM.dd', {
+              //   locale: ko,
+              // }),
               format(date, 'MM.dd', {
                 locale: ko,
               }),
@@ -83,92 +105,27 @@ function ChartKit() {
                 data: [
                   //Math.random() * 100,
                   // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
-                  14, 15, 14, 15, 16, 14, 13,
+                  //주석처리하고 돌린후 주석풀면 나타남 안그럼 오류..
+                  !eat ? 0 : eat.length ? eat.length : 0,
+
+                  //eat.length,
+                  //4,
+                  // 14, 15, 14, 15, 16, 14, 13,
                 ],
               },
             ],
           }}
+          fromZero="true"
           width={Dimensions.get('window').width} // 화면 너비만큼 채우기
           height={200} //그래프 높이
           // yAxisLabel="$" //y축 첫글자
-          yAxisSuffix="시간" //y축 끝글자
+          yAxisSuffix="번" //y축 끝글자
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: '#e26a00',
             backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
             backgroundGradientTo: '#ffffff', //오른쪽 색
-            decimalPlaces: 2, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
-            barPercentage: 0.8, //막대 너비
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '5',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier //선그래프에서 곡선옵션
-          style={{
-            marginVertical: 8, //그래프 위 마진
-            borderRadius: 0, //그림 테두리 둥근정도
-          }}
-        />
-
-        <View style={styles.padding}>
-          <Text style={styles.title}>낮잠 시간</Text>
-        </View>
-
-        <BarChart
-          fromZero={true}
-          data={{
-            //x축 이름
-            labels: [
-              format(add(date, {days: -6}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -5}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -4}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -3}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -2}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -1}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(date, 'MM.dd', {
-                locale: ko,
-              }),
-            ],
-            datasets: [
-              {
-                //표시할 값
-                data: [
-                  //Math.random() * 100,
-                  // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
-                  2, 2, 4, 2, 3, 4, 4,
-                ],
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width} // 화면 너비만큼 채우기
-          height={200} //그래프 높이
-          // yAxisLabel="$" //y축 첫글자
-          yAxisSuffix="시간" //y축 끝글자
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
-            backgroundGradientTo: '#ffffff', //오른쪽 색
-            decimalPlaces: 2, // optional, defaults to 2dp
+            decimalPlaces: 0, // optional, defaults to 2dp
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
             barPercentage: 0.8, //막대 너비
@@ -196,24 +153,6 @@ function ChartKit() {
           data={{
             //x축 이름
             labels: [
-              format(add(date, {days: -6}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -5}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -4}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -3}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -2}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -1}), 'MM.dd', {
-                locale: ko,
-              }),
               format(date, 'MM.dd', {
                 locale: ko,
               }),
@@ -224,11 +163,14 @@ function ChartKit() {
                 data: [
                   //Math.random() * 100,
                   // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
-                  1, 2, 1, 1, 1, 2, 2,
+                  //1, 2, 1, 1, 1, 2, 2,
+
+                  !toilet ? 0 : toilet.length ? toilet.length : 0,
                 ],
               },
             ],
           }}
+          fromZero="true"
           width={Dimensions.get('window').width} // 화면 너비만큼 채우기
           height={200} //그래프 높이
           // yAxisLabel="$" //y축 첫글자
@@ -238,7 +180,61 @@ function ChartKit() {
             backgroundColor: '#e26a00',
             backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
             backgroundGradientTo: '#ffffff', //오른쪽 색
-            decimalPlaces: 2, // optional, defaults to 2dp
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
+            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
+            barPercentage: 0.8, //막대 너비
+            style: {
+              borderRadius: 16,
+            },
+            propsForDots: {
+              r: '6',
+              strokeWidth: '5',
+              stroke: '#ffa726',
+            },
+          }}
+          bezier //선그래프에서 곡선옵션
+          style={{
+            marginVertical: 8, //그래프 위 마진
+            borderRadius: 0, //그림 테두리 둥근정도
+          }}
+        />
+
+        <View style={styles.padding}>
+          <Text style={styles.title}>수면 횟수</Text>
+        </View>
+
+        <BarChart
+          data={{
+            //x축 이름
+            labels: [
+              format(date, 'MM.dd', {
+                locale: ko,
+              }),
+            ],
+            datasets: [
+              {
+                //표시할 값
+                data: [
+                  //Math.random() * 100,
+                  // 0.13, 0.15, 0.125, 0.13, 0.15, 0.14, 0.16,
+                  //2, 2, 4, 2, 3, 4, 4,
+                  !sleep ? 0 : sleep.length ? sleep.length : 0,
+                ],
+              },
+            ],
+          }}
+          fromZero="true"
+          width={Dimensions.get('window').width} // 화면 너비만큼 채우기
+          height={200} //그래프 높이
+          // yAxisLabel="$" //y축 첫글자
+          yAxisSuffix="시간" //y축 끝글자
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={{
+            backgroundColor: '#e26a00',
+            backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
+            backgroundGradientTo: '#ffffff', //오른쪽 색
+            decimalPlaces: 0, // optional, defaults to 2dp
             color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //막대, 점선 색
             labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
             barPercentage: 0.8, //막대 너비
