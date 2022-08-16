@@ -17,7 +17,7 @@ import {createEatRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
-import {updateBadgeAchieve} from '../../lib/badge';
+import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
 
 const foodChips = [
   {id: 1, content: '모유'},
@@ -76,18 +76,23 @@ function EatingRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    const state = await getBadgeAchieveState({id, badgeNumber: 3});
+
+    if (!state.achieve) {
+      Alert.alert(
+        '🎉축하합니다!🎉',
+        '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+        [{text: '확인', onPress: () => {}, style: 'cancel'}],
+      );
+    }
+
     await updateBadgeAchieve({id, badgeNumber: 3}).catch(error => {
       console.log(error.message);
     });
 
     events.emit('refresh');
     events.emit('badgeUpdate');
-
-    Alert.alert(
-      '🎉축하합니다!🎉',
-      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
-      [{text: '확인', onPress: () => {}, style: 'cancel'}],
-    );
+    events.emit('recordScreenUpdate');
   }, [
     onSubmit,
     order,

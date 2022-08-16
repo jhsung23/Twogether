@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {Chip} from 'react-native-paper';
 
-import {updateBadgeAchieve} from '../../lib/badge';
+import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createToiletRecord} from '../../lib/records';
@@ -70,12 +70,23 @@ function ToiletRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    const state = await getBadgeAchieveState({id, badgeNumber: 4});
+
+    if (!state.achieve) {
+      Alert.alert(
+        '🎉축하합니다!🎉',
+        '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
+        [{text: '확인', onPress: () => {}, style: 'cancel'}],
+      );
+    }
+
     await updateBadgeAchieve({id, badgeNumber: 4}).catch(error => {
       console.log(error.message);
     });
 
     events.emit('refresh');
     events.emit('badgeUpdate');
+    events.emit('recordScreenUpdate');
 
     Alert.alert(
       '🎉축하합니다!🎉',

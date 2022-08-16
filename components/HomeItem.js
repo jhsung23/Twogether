@@ -135,7 +135,7 @@ function HomeItem({
             <>
               <Text style={styles.mainText}>잠을 {sleep.length} 번 잤어요</Text>
               <Text style={styles.subText}>
-                마지막 잠든 시간: {formatTime(sleep[0].whenStart.toDate())}{' '}
+                마지막 잠든 시간: {formatTime(sleep[0].when.toDate())}{' '}
               </Text>
             </>
           ) : (
