@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -17,6 +17,7 @@ import Clipboard from '@react-native-clipboard/clipboard';
 import {signOut} from '../lib/auth';
 import BabyProfile from '../components/BabyProfile';
 import {getBaby} from '../lib/baby';
+import events from '../lib/events';
 
 function MypageScreen() {
   const route = useRoute();
@@ -38,7 +39,21 @@ function MypageScreen() {
   //아기 정보 가져오기
   useEffect(() => {
     getBaby({code}).then(setBabyInfo);
+    //홈에서 추가한 아기를 마이페이지와 동기화
+    events.emit('updateBaby'); //주석해도 결과 동일
   }, [code]);
+
+  const updateBaby = useCallback(() => {
+    getBaby({code}).then(setBabyInfo);
+  }, [code]);
+
+  useEffect(() => {
+    events.addListener('updateBaby', updateBaby);
+
+    return () => {
+      events.removeListener('updateBaby', updateBaby);
+    };
+  }, [updateBaby]);
 
   const copyToClipboard = () => {
     Clipboard.setString(code); //초대코드 복사
@@ -51,6 +66,10 @@ function MypageScreen() {
   const onLogout = async () => {
     await signOut();
     setUser(null);
+  };
+
+  const renderTodayInfo = ({item}) => {
+    return <BabyProfile name={item.name} age={item.age} order={item.order} />;
   };
 
   return (
@@ -98,10 +117,6 @@ function MypageScreen() {
     </SafeAreaView>
   );
 }
-
-const renderTodayInfo = ({item}) => {
-  return <BabyProfile name={item.name} age={item.age} order={item.order} />;
-};
 
 const styles = StyleSheet.create({
   block: {flex: 1, backgroundColor: 'white'},
