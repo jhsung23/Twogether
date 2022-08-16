@@ -13,7 +13,7 @@ import {createBaby} from '../lib/baby';
 import events from '../lib/events';
 import CustomButton from './CustomButton';
 
-function RegisterBaby({onSubmit, babyForm, onChange}) {
+function RegisterBaby({onSubmit, babyForm, onChange, additional}) {
   const {user} = useUserContext();
 
   const [baby, setBaby] = useState({
@@ -48,9 +48,14 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
       }}
       accessible={false}>
       <View style={styles.block}>
-        <View style={styles.sheetHeader}>
-          <Text style={styles.sheetTitle}>아기 정보 등록</Text>
-        </View>
+        {additional ? (
+          <View style={styles.sheetHeader}>
+            <Text style={styles.sheetTitle}>아기 정보 등록</Text>
+          </View>
+        ) : (
+          // eslint-disable-next-line react-native/no-inline-styles
+          <View style={{margin: 5}} />
+        )}
         <View style={styles.wrapper}>
           <>
             <TextInput
@@ -58,7 +63,10 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholder="아기 이름"
               placeholderTextColor="#919191"
               value={baby.name}
-              onChangeText={value => updateBabyForm('name', value)}
+              onChangeText={value => {
+                updateBabyForm('name', value);
+                onChange ? onChange('name', value) : null;
+              }}
             />
             <TextInput
               // eslint-disable-next-line react-native/no-inline-styles
@@ -67,7 +75,10 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholderTextColor="#919191"
               keyboardType="numeric"
               value={baby.order}
-              onChangeText={value => updateBabyForm('order', value)}
+              onChangeText={value => {
+                updateBabyForm('order', value);
+                onChange ? onChange('order', value) : null;
+              }}
             />
             <Text style={styles.unitText}>째</Text>
           </>
@@ -81,7 +92,10 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholderTextColor="#919191"
               keyboardType="numeric"
               value={baby.birthYear}
-              onChangeText={value => updateBabyForm('birthYear', value)}
+              onChangeText={value => {
+                updateBabyForm('birthYear', value);
+                onChange ? onChange('birthYear', value) : null;
+              }}
             />
             <Text style={styles.unitText}>년</Text>
           </>
@@ -92,7 +106,10 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholderTextColor="#919191"
               keyboardType="numeric"
               value={baby.birthMonth}
-              onChangeText={value => updateBabyForm('birthMonth', value)}
+              onChangeText={value => {
+                updateBabyForm('birthMonth', value);
+                onChange ? onChange('birthMonth', value) : null;
+              }}
             />
             <Text style={styles.unitText}>월</Text>
           </>
@@ -103,7 +120,10 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholderTextColor="#919191"
               keyboardType="numeric"
               value={baby.birthDay}
-              onChangeText={value => updateBabyForm('birthDay', value)}
+              onChangeText={value => {
+                updateBabyForm('birthDay', value);
+                onChange ? onChange('birthDay', value) : null;
+              }}
             />
             <Text style={styles.unitText}>일</Text>
           </>
@@ -116,7 +136,10 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholderTextColor="#919191"
               keyboardType="numeric"
               value={baby.height}
-              onChangeText={value => updateBabyForm('height', value)}
+              onChangeText={value => {
+                updateBabyForm('height', value);
+                onChange ? onChange('height', value) : null;
+              }}
             />
             <Text style={styles.unitText}>cm</Text>
           </>
@@ -127,14 +150,21 @@ function RegisterBaby({onSubmit, babyForm, onChange}) {
               placeholderTextColor="#919191"
               keyboardType="numeric"
               value={baby.weight}
-              onChangeText={value => updateBabyForm('weight', value)}
+              onChangeText={value => {
+                updateBabyForm('weight', value);
+                onChange ? onChange('weight', value) : null;
+              }}
             />
             <Text style={styles.unitText}>kg</Text>
           </>
         </View>
-        {/* eslint-disable-next-line react-native/no-inline-styles */}
-        <View style={{marginBottom: 20}} />
-        <CustomButton title="등록" onPress={submit} />
+        {additional ? (
+          <>
+            {/*eslint-disable-next-line react-native/no-inline-styles*/}
+            <View style={{marginBottom: 20}} />
+            <CustomButton title="등록" onPress={submit} />
+          </>
+        ) : null}
       </View>
     </TouchableWithoutFeedback>
   );
