@@ -17,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAlignment="center"
+        android:gravity="center"
         android:layout_marginTop="150dp"
         app:layout_constraintBottom_toTopOf="@id/title"/>
 

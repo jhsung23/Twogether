@@ -27,7 +27,7 @@ function HomeItemAdd({width}) {
         modalVisible={isOpenModal}
         onClose={closeModal}
         registerBaby={true}>
-        <RegisterBaby onSubmit={closeModal} />
+        <RegisterBaby onSubmit={closeModal} additional />
       </BottomSheet>
     </>
   );

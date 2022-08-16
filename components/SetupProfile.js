@@ -281,7 +281,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   circle: {
-    marginTop: 15,
     backgroundColor: '#cdcdcd',
     borderRadius: 32,
     width: 64,
@@ -292,7 +291,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   buttons: {
-    marginTop: 48,
+    marginTop: 30,
   },
   chipWrapper: {
     // backgroundColor: 'red',

@@ -38,10 +38,10 @@ function BadgeScreen() {
         <Text style={styles.titleText}>나의 배지 현황</Text>
       </View>
       <Text style={styles.description}>
-        목표가 달성되면 자동으로 배지가 획득돼요!
+        숨겨진 목표를 달성하면 자동으로 배지를 획득합니다.
       </Text>
       <Text style={styles.description}>
-        지금까지 획득한 배지 개수: {achieveBadge}
+        지금까지 획득한 배지 개수는 {achieveBadge}개 입니다.
       </Text>
       <FlatList
         style={styles.list}
@@ -68,12 +68,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   titleTextWrapper: {
-    borderRadius: 20,
-    marginStart: 15,
-    marginTop: 20,
     marginBottom: 15,
-    width: 120,
-    height: 40,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(152,196,102,0.15)',
@@ -84,7 +80,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   description: {
-    marginStart: 25,
+    textAlign: 'center',
+    // marginStart: 25,
     color: '#454545',
     marginTop: 5,
     fontSize: 15,
