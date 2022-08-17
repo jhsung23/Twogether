@@ -93,6 +93,7 @@ function EatingRecord({order, onSubmit}) {
     events.emit('refresh');
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
+    events.emit('chartUpdate');
   }, [
     onSubmit,
     order,

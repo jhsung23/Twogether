@@ -6,7 +6,7 @@ import {
   ContributionGraph,
   StackedBarChart,
 } from 'react-native-chart-kit';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {format, add} from 'date-fns';
 import {ko} from 'date-fns/locale';
 import {
@@ -21,6 +21,7 @@ import {
 import DatePicker from 'react-native-date-picker';
 import {useUserContext} from '../contexts/UserContext';
 import {getEat, getToilet, getSleep} from '../lib/records';
+import events from '../lib/events';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -40,14 +41,19 @@ function ChartKit() {
     getSleep({code, order}).then(setSleep);
   }, [code, order]);
 
-  // useEffect(() => {
-  //   const fn = async () => {
-  //     await getEat({code, order}).then(setEat);
-  //     console.log(eat);
-  //     eat.length = eat.length === undefined ? 1 : eat.length;
-  //   };
-  //   fn();
-  // }, [code, order, eat]);
+  const chartUpdate = useCallback(() => {
+    getEat({code, order}).then(setEat);
+    getToilet({code, order}).then(setToilet);
+    getSleep({code, order}).then(setSleep);
+  }, [code]);
+
+  useEffect(() => {
+    events.addListener('chartUpdate', chartUpdate);
+
+    return () => {
+      events.removeListener('chartUpdate', chartUpdate);
+    };
+  }, [chartUpdate]);
 
   return (
     <SafeAreaView style={styles.full}>
