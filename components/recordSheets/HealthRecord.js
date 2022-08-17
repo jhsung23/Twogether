@@ -18,6 +18,7 @@ import {createHealthRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
+import {createCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '외래진료'},
@@ -63,6 +64,10 @@ function HealthRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    await createCount({code, id}).catch(error => {
+      console.log(error.message);
+    });
+
     const state = await getBadgeAchieveState({id, badgeNumber: 7});
 
     if (!state.achieve) {
@@ -79,6 +84,7 @@ function HealthRecord({order, onSubmit}) {
 
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
     user.id,

@@ -19,6 +19,8 @@ import {useUserContext} from '../contexts/UserContext';
 import {getEat, getToilet, getSleep} from '../lib/records';
 import events from '../lib/events';
 import {getBabyOrder} from '../lib/baby';
+import {getCount} from '../lib/statistics';
+import {getAchieveBadges} from '../lib/badge';
 
 const screenWidth = Dimensions.get('window').width;
 const orderKor = [{1: '첫째'}, {2: '둘째'}, {3: '셋째'}, {4: '넷째'}];
@@ -27,6 +29,11 @@ function ChartKit() {
   const date = new Date();
 
   const {user} = useUserContext();
+  const id = user.id;
+  const code = user.code;
+
+  const [count, setCount] = useState();
+  const [achieveBadge, setAchieveBadge] = useState();
   const [eat, setEat] = useState();
   const [toilet, setToilet] = useState();
   const [sleep, setSleep] = useState();
@@ -38,8 +45,6 @@ function ChartKit() {
   const [eatVisible, setEatVisible] = useState(false);
   const [toiletVisible, setToiletVisible] = useState(false);
   const [sleepVisible, setSleepVisible] = useState(false);
-
-  const code = user.code;
 
   // firebase에서 데이터 Load
   useEffect(() => {
@@ -53,6 +58,16 @@ function ChartKit() {
     console.log('chip setting');
     getBabyOrder({code}).then(setCategory);
   }, [code]);
+
+  //count 정보 load
+  useEffect(() => {
+    getCount({code, id}).then(setCount);
+  }, [code, id]);
+
+  //사용자의 뱃지 현황 가져오기
+  useEffect(() => {
+    getAchieveBadges({id}).then(setAchieveBadge);
+  }, [id]);
 
   // 아기 추가 등록 시 chip 새로 셋팅할 수 있도록 order reload
   const updateBaby = useCallback(() => {
@@ -82,8 +97,19 @@ function ChartKit() {
     };
   }, [chartUpdate]);
 
+  // 배지 획득 시 통계에 바로 반영되도록 동기화
+  const badgeUpdate = useCallback(() => {
+    getAchieveBadges({id}).then(setAchieveBadge);
+  }, [id]);
+
+  useEffect(() => {
+    events.addListener('statisticsBadgeUpdate', badgeUpdate);
+
+    return events.removeListener('statisticsBadgeUpdate', badgeUpdate);
+  }, [badgeUpdate]);
+
   const widthAndHeight = 110;
-  const series = [7, 3]; //자기자신이 0번, 파트너 1번
+  const series = [!count ? 0 : count.length ? count.length : 0, 4]; //자기자신이 0번, 파트너 1번
   const sliceColor = ['rgba(255, 211, 99,0.7)', '#efefef'];
 
   const eatData = [
@@ -125,13 +151,15 @@ function ChartKit() {
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>나의 기록 횟수</Text>
               </View>
-              <Text style={styles.contenItemText}>7회</Text>
+              <Text style={styles.contenItemText}>
+                {!count ? 0 : count.length ? count.length : 0}회
+              </Text>
             </View>
             <View style={styles.rowContent}>
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>획득한 배지 개수</Text>
               </View>
-              <Text style={styles.contenItemText}>3개</Text>
+              <Text style={styles.contenItemText}>{achieveBadge}개</Text>
             </View>
             <View style={styles.rowContent}>
               <View style={styles.contentItemBox}>
@@ -332,11 +360,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#454545',
     marginStart: 20,
+    // marginTop: 10,
     fontWeight: 'bold',
   },
   reportBoxContainer: {
     justifyContent: 'space-between',
     flexDirection: 'row',
+    marginBottom: 20,
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 10,
@@ -355,7 +385,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 7,
   },
   chip: {
     marginEnd: 5,

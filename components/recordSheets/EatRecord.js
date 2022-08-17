@@ -18,6 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
 import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
+import {createCount} from '../../lib/statistics';
 
 const foodChips = [
   {id: 1, content: '모유'},
@@ -73,6 +74,10 @@ function EatingRecord({order, onSubmit}) {
       date,
       memo,
     }).catch(error => {
+      console.log(error.message);
+    });
+
+    await createCount({code, id}).catch(error => {
       console.log(error.message);
     });
 

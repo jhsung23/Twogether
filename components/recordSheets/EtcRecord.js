@@ -18,6 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createEtcRecord} from '../../lib/records';
 import events from '../../lib/events';
+import {createCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '체험'},
@@ -72,6 +73,10 @@ function EtcRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    await createCount({code, id}).catch(error => {
+      console.log(error.message);
+    });
+
     const state = await getBadgeAchieveState({
       id,
       badgeNumber: badgeNumber[selectedCategory],
@@ -94,6 +99,7 @@ function EtcRecord({order, onSubmit}) {
 
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
     user.id,
