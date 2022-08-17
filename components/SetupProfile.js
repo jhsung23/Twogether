@@ -120,6 +120,7 @@ function SetupProfile() {
 
     await createUser(user);
     const userInfo = await getUser({id: uid});
+    setUser(userInfo);
 
     createCount({code, id: uid});
 
@@ -145,7 +146,6 @@ function SetupProfile() {
 
       await createBaby({code, babyForm});
     }
-    setUser(userInfo);
   };
   const onCancel = () => {
     signOut();
