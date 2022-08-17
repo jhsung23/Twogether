@@ -87,7 +87,8 @@ function ChartKit() {
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
-  }, [code, order]);
+    getCount({code, id}).then(setCount);
+  }, [code, order, id]);
 
   useEffect(() => {
     events.addListener('chartUpdate', chartUpdate);
@@ -112,27 +113,27 @@ function ChartKit() {
 
   const widthAndHeight = 110;
   const series = [!count ? 0 : count.length ? count.length : 0, 4]; //자기자신이 0번, 파트너 1번
-  const sliceColor = ['rgba(255, 211, 99,0.7)', '#ffe8b3'];
+  const sliceColor = ['rgba(255, 211, 99,0.7)', 'rgba(255, 232, 179, 0.6)'];
 
   const eatData = [
-    {label: '08.14', value: 4},
-    {label: '08.15', value: 3},
-    {label: '08.16', value: 4},
-    {label: '08.17', value: !eat ? 0 : eat.length ? eat.length : 0},
+    {label: '08.15', value: 4},
+    {label: '08.16', value: 3},
+    {label: '08.17', value: 4},
+    {label: '08.18', value: !eat ? 0 : eat.length ? eat.length : 0},
   ];
 
   const toiletData = [
-    {label: '08.14', value: 4},
-    {label: '08.15', value: 3},
-    {label: '08.16', value: 4},
-    {label: '08.17', value: !toilet ? 0 : toilet.length ? toilet.length : 0},
+    {label: '08.15', value: 4},
+    {label: '08.16', value: 3},
+    {label: '08.17', value: 4},
+    {label: '08.18', value: !toilet ? 0 : toilet.length ? toilet.length : 0},
   ];
 
   const sleepData = [
-    {label: '08.14', value: 4},
-    {label: '08.15', value: 3},
-    {label: '08.16', value: 4},
-    {label: '08.17', value: !sleep ? 0 : sleep.length ? sleep.length : 0},
+    {label: '08.15', value: 4},
+    {label: '08.16', value: 3},
+    {label: '08.17', value: 4},
+    {label: '08.18', value: !sleep ? 0 : sleep.length ? sleep.length : 0},
   ];
 
   //render
@@ -225,6 +226,7 @@ function ChartKit() {
       <View style={styles.barchart}>
         <BarChart
           data={eatData}
+          width={260}
           initialSpacing={30}
           height={140}
           yAxisThickness={0}
@@ -280,6 +282,7 @@ function ChartKit() {
           data={toiletData}
           initialSpacing={30}
           dashWidth={4}
+          width={260}
           height={140}
           yAxisThickness={0}
           xAxisColor="#454545"
@@ -333,6 +336,7 @@ function ChartKit() {
           dashWidth={4}
           initialSpacing={30}
           height={140}
+          width={260}
           yAxisThickness={0}
           xAxisColor="#454545"
           spacing={30}

@@ -55,5 +55,10 @@
   },
   "jest": {
     "preset": "react-native"
-  }
+  },
+  "description": "description",
+  "main": "index.js",
+  "repository": "https://github.com/jhsung23/Together.git",
+  "author": "sungjihyun <jhsung23@gmail.com>",
+  "license": "MIT"
 }
