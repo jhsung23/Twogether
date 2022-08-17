@@ -1,12 +1,6 @@
-import {
-  LineChart,
-  BarChart,
-  PieChart,
-  ProgressChart,
-  ContributionGraph,
-  StackedBarChart,
-} from 'react-native-chart-kit';
 import React, {useEffect, useState, useCallback} from 'react';
+// import {BarChart} from 'react-native-chart-kit';
+import {BarChart} from 'react-native-gifted-charts';
 import {format, add} from 'date-fns';
 import {ko} from 'date-fns/locale';
 import {
@@ -14,16 +8,20 @@ import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
-  SafeAreaView,
-  Image,
+  TouchableOpacity,
 } from 'react-native';
-import DatePicker from 'react-native-date-picker';
+import {Chip} from 'react-native-paper';
+import PieChart from 'react-native-pie-chart';
+import Tooltip from 'react-native-walkthrough-tooltip';
+import Icon from 'react-native-vector-icons/Octicons';
+
 import {useUserContext} from '../contexts/UserContext';
 import {getEat, getToilet, getSleep} from '../lib/records';
 import events from '../lib/events';
+import {getBabyOrder} from '../lib/baby';
 
 const screenWidth = Dimensions.get('window').width;
+const orderKor = [{1: '첫째'}, {2: '둘째'}, {3: '셋째'}, {4: '넷째'}];
 
 function ChartKit() {
   const date = new Date();
@@ -32,20 +30,49 @@ function ChartKit() {
   const [eat, setEat] = useState();
   const [toilet, setToilet] = useState();
   const [sleep, setSleep] = useState();
-  const code = user.code;
-  const order = 1;
 
+  const [category, setCategory] = useState([]);
+  const [selectedChip, setSelectedChip] = useState('1');
+  const [order, setOrder] = useState('1'); //기본값은 첫째
+
+  const [eatVisible, setEatVisible] = useState(false);
+  const [toiletVisible, setToiletVisible] = useState(false);
+  const [sleepVisible, setSleepVisible] = useState(false);
+
+  const code = user.code;
+
+  // firebase에서 데이터 Load
   useEffect(() => {
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
   }, [code, order]);
 
+  // firebase에서 칩 세팅을 위한 자녀 명수 정보 load
+  useEffect(() => {
+    console.log('chip setting');
+    getBabyOrder({code}).then(setCategory);
+  }, [code]);
+
+  // 아기 추가 등록 시 chip 새로 셋팅할 수 있도록 order reload
+  const updateBaby = useCallback(() => {
+    getBabyOrder({code}).then(setCategory);
+  }, [code]);
+
+  useEffect(() => {
+    events.addListener('updateBaby', updateBaby);
+
+    return () => {
+      events.removeListener('updateBaby', updateBaby);
+    };
+  }, [updateBaby]);
+
+  // record 등록 시 통계에 바로 반영되도록 동기화
   const chartUpdate = useCallback(() => {
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
-  }, [code]);
+  }, [code, order]);
 
   useEffect(() => {
     events.addListener('chartUpdate', chartUpdate);
@@ -55,287 +82,353 @@ function ChartKit() {
     };
   }, [chartUpdate]);
 
+  const widthAndHeight = 110;
+  const series = [7, 3]; //자기자신이 0번, 파트너 1번
+  const sliceColor = ['rgba(255, 211, 99,0.7)', '#efefef'];
+
+  const eatData = [
+    {label: '08.14', value: 4},
+    {label: '08.15', value: 3},
+    {label: '08.16', value: 4},
+    {label: '08.17', value: !eat ? 0 : eat.length ? eat.length : 0},
+  ];
+
+  const toiletData = [
+    {label: '08.14', value: 4},
+    {label: '08.15', value: 3},
+    {label: '08.16', value: 4},
+    {label: '08.17', value: !toilet ? 0 : toilet.length ? toilet.length : 0},
+  ];
+
+  const sleepData = [
+    {label: '08.14', value: 4},
+    {label: '08.15', value: 3},
+    {label: '08.16', value: 4},
+    {label: '08.17', value: !sleep ? 0 : sleep.length ? sleep.length : 0},
+  ];
+
+  //render
   return (
-    <SafeAreaView style={styles.full}>
-      <ScrollView>
-        {/* <View style={styles.block}>
-          <Image
-            source={require('../assets/calendar.png')}
-            style={styles.image}
-            resizeMode="center"
-          />
-          <Text style={styles.titleDate}>
-            {format(add(date, {days: -6}), 'MM.dd', {
-              locale: ko,
-            })}
-            <Text> ~ </Text>
-            {format(date, 'MM.dd', {
-              locale: ko,
-            })}
-          </Text>
-        </View> */}
-
-        <View style={styles.padding}>
-          <Text style={styles.title}>섭취 횟수</Text>
+    <View>
+      <Text style={styles.title}>나의 육아 참여도는?</Text>
+      <View style={styles.reportBoxContainer}>
+        <View style={styles.box}>
+          <View style={styles.pieChart}>
+            <PieChart
+              widthAndHeight={widthAndHeight}
+              series={series}
+              sliceColor={sliceColor}
+            />
+          </View>
+          <View style={styles.pieChartDescription}>
+            <View style={styles.rowContent}>
+              <View style={styles.contentItemBox}>
+                <Text style={styles.contentItem}>나의 기록 횟수</Text>
+              </View>
+              <Text style={styles.contenItemText}>7회</Text>
+            </View>
+            <View style={styles.rowContent}>
+              <View style={styles.contentItemBox}>
+                <Text style={styles.contentItem}>획득한 배지 개수</Text>
+              </View>
+              <Text style={styles.contenItemText}>3개</Text>
+            </View>
+            <View style={styles.rowContent}>
+              <View style={styles.contentItemBox}>
+                <Text style={styles.contentItem}>배우자의 기록 횟수 </Text>
+              </View>
+              <Text style={styles.contenItemText}>3개</Text>
+            </View>
+          </View>
         </View>
+      </View>
 
+      <Text style={styles.title}>우리 아이 기록 통계</Text>
+      <View style={styles.chipWrapper}>
+        <Text style={styles.categoryText}>아기 구분</Text>
+        {category.map(({id}) => (
+          <Chip
+            key={id}
+            style={styles.chip}
+            textStyle={styles.chipText}
+            height={30}
+            icon={id === selectedChip ? 'check' : null}
+            selected={id === selectedChip}
+            onPress={() => {
+              if (id === selectedChip) {
+                setSelectedChip(null);
+              } else {
+                setSelectedChip(id);
+                setOrder(id + '');
+              }
+            }}>
+            {orderKor[parseInt(id, 10) - 1][id]}
+          </Chip>
+        ))}
+      </View>
+
+      <View style={styles.titleHeader}>
+        <Text style={styles.title}>섭취 횟수</Text>
+        <Tooltip
+          isVisible={eatVisible}
+          onClose={() => setEatVisible(!eatVisible)}
+          content={
+            <Text>
+              영유아 권장 단백질/수분 섭취량{'\n'}
+              {'\n'}
+              0~11개월 : 13g, 750ml{'\n'}
+              1~3세 : 13g, 1000ml
+            </Text>
+          }>
+          <TouchableOpacity onPress={() => setEatVisible(!eatVisible)}>
+            <Icon
+              style={styles.icon}
+              name={'question'}
+              color={'#c0c0c0'}
+              size={18}
+            />
+          </TouchableOpacity>
+        </Tooltip>
+      </View>
+      <View style={styles.barchart}>
         <BarChart
-          data={{
-            //x축 이름
-            labels: [
-              // format(add(date, {days: -6}), 'MM.dd', {
-              //   locale: ko,
-              // }),
-              // format(add(date, {days: -5}), 'MM.dd', {
-              //   locale: ko,
-              // }),
-              // format(add(date, {days: -4}), 'MM.dd', {
-              //   locale: ko,
-              // }),
-              format(add(date, {days: -3}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -2}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -1}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(date, 'MM.dd', {
-                locale: ko,
-              }),
-            ],
-            datasets: [
-              {
-                //표시할 값
-                data: [
-                  //Math.random() * 100,
-                  8,
-                  8,
-                  9,
-                  !eat ? 0 : eat.length ? eat.length : 0,
-
-                  // 14, 15, 14, 15, 16, 14, 13,
-                ],
-              },
-            ],
+          data={eatData}
+          initialSpacing={30}
+          height={140}
+          yAxisThickness={0}
+          xAxisColor="#454545"
+          yAxisLabelTexts={['0번', ' 2번', ' 4번', ' 6번', ' 8번', '10번']}
+          spacing={30}
+          barWidth={30}
+          barBorderRadius={4}
+          minValue={0}
+          noOfSections={5}
+          backgroundColor="#f5f5f5"
+          frontColor={'rgba(152,196,102,0.5)'}
+          showLine
+          lineConfig={{
+            color: '#F29C6E',
+            thickness: 4,
+            curved: true,
+            hideDataPoints: true,
+            shiftY: 5,
+            initialSpacing: 15,
           }}
-          fromZero="true"
-          width={Dimensions.get('window').width} // 화면 너비만큼 채우기
-          height={200} //그래프 높이
-          // yAxisLabel="$" //y축 첫글자
-          yAxisSuffix="번" //y축 끝글자
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
-            backgroundGradientTo: '#ffffff', //오른쪽 색
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 10) => `rgba(56, 168,0, ${opacity})`, //막대, 점선 색
-            // color: { rgba(56, 168,0 )}, //막대, 점선 색
-            // labelColor: rgba(0, 0, 0, ${opacity}), //글자 색
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
-            barPercentage: 0.8, //막대 너비
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '5',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier //선그래프에서 곡선옵션
-          style={{
-            marginVertical: 8, //그래프 위 마진
-            borderRadius: 0, //그림 테두리 둥근정도
-          }}
+          dashWidth={4}
         />
+      </View>
 
-        <View style={styles.padding}>
-          <Text style={styles.title}>배변 횟수</Text>
-        </View>
-
+      <View style={styles.titleHeader}>
+        <Text style={styles.title}>배변 횟수</Text>
+        <Tooltip
+          isVisible={toiletVisible}
+          onClose={() => setToiletVisible(!toiletVisible)}
+          content={
+            <Text>
+              유아 평균 배변 횟수{'\n'}
+              {'\n'}
+              출생~3개월(모유수 유아): 2.9회{'\n'}
+              출생~3개월(분유수 유아): 2.0회{'\n'}
+              6-10개월: 1.8회{'\n'}
+              1-3세: 1.4회
+            </Text>
+          }>
+          <TouchableOpacity onPress={() => setToiletVisible(!toiletVisible)}>
+            <Icon
+              style={styles.icon}
+              name={'question'}
+              color={'#c0c0c0'}
+              size={18}
+            />
+          </TouchableOpacity>
+        </Tooltip>
+      </View>
+      <View style={styles.barchart}>
         <BarChart
-          data={{
-            //x축 이름
-            labels: [
-              format(add(date, {days: -3}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -2}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -1}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(date, 'MM.dd', {
-                locale: ko,
-              }),
-            ],
-            datasets: [
-              {
-                //표시할 값
-                data: [
-                  //Math.random() * 100,
-                  //1, 2, 1, 1, 1, 2, 2,
-                  4,
-                  5,
-                  4,
-                  !toilet ? 0 : toilet.length ? toilet.length : 0,
-                ],
-              },
-            ],
+          data={toiletData}
+          initialSpacing={30}
+          dashWidth={4}
+          height={140}
+          yAxisThickness={0}
+          xAxisColor="#454545"
+          spacing={30}
+          barWidth={30}
+          barBorderRadius={4}
+          minValue={0}
+          noOfSections={5}
+          backgroundColor="#f5f5f5"
+          yAxisLabelTexts={['0번', ' 2번', ' 4번', ' 6번', ' 8번', '10번']}
+          showLine
+          lineConfig={{
+            color: '#F29C6E',
+            thickness: 4,
+            curved: true,
+            hideDataPoints: true,
+            shiftY: 5,
+            initialSpacing: 15,
           }}
-          fromZero="true"
-          width={Dimensions.get('window').width} // 화면 너비만큼 채우기
-          height={200} //그래프 높이
-          // yAxisLabel="$" //y축 첫글자
-          yAxisSuffix="번" //y축 끝글자
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
-            backgroundGradientTo: '#ffffff', //오른쪽 색
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(235, 75, 125, ${opacity})`, //막대, 점선 색
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
-            barPercentage: 0.8, //막대 너비
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '5',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier //선그래프에서 곡선옵션
-          style={{
-            marginVertical: 8, //그래프 위 마진
-            borderRadius: 0, //그림 테두리 둥근정도
-          }}
+          frontColor={'rgba(232, 135, 159, 0.5)'}
         />
+      </View>
 
-        <View style={styles.padding}>
-          <Text style={styles.title}>수면 횟수</Text>
-        </View>
-
+      <View style={styles.titleHeader}>
+        <Text style={styles.title}>수면 횟수</Text>
+        <Tooltip
+          isVisible={sleepVisible}
+          onClose={() => setSleepVisible(!sleepVisible)}
+          content={
+            <Text>
+              유아 평균 수면 시간{'\n'}
+              {'\n'}
+              4~12개월: 12 ~ 16 시간{'\n'}
+              1~2세: 11 ~ 14 시간{'\n'}
+              3세 이상: 10 ~ 13시간
+            </Text>
+          }>
+          <TouchableOpacity onPress={() => setSleepVisible(!sleepVisible)}>
+            <Icon
+              style={styles.icon}
+              name={'question'}
+              color={'#c0c0c0'}
+              size={18}
+            />
+          </TouchableOpacity>
+        </Tooltip>
+      </View>
+      <View style={styles.barchart}>
         <BarChart
-          data={{
-            //x축 이름
-            labels: [
-              format(add(date, {days: -3}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -2}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(add(date, {days: -1}), 'MM.dd', {
-                locale: ko,
-              }),
-              format(date, 'MM.dd', {
-                locale: ko,
-              }),
-            ],
-            datasets: [
-              {
-                //표시할 값
-                data: [
-                  //Math.random() * 100,
-                  //2, 2, 4, 2, 3, 4, 4,
-                  5,
-                  4,
-                  5,
-                  !sleep ? 0 : sleep.length ? sleep.length : 0,
-                ],
-              },
-            ],
+          data={sleepData}
+          dashWidth={4}
+          initialSpacing={30}
+          height={140}
+          yAxisThickness={0}
+          xAxisColor="#454545"
+          spacing={30}
+          barWidth={30}
+          barBorderRadius={4}
+          minValue={0}
+          maxValue={6}
+          noOfSections={6}
+          backgroundColor="#f5f5f5"
+          showLine
+          lineConfig={{
+            color: '#F29C6E',
+            thickness: 4,
+            curved: true,
+            hideDataPoints: true,
+            shiftY: 5,
+            initialSpacing: 15,
           }}
-          fromZero="true"
-          width={Dimensions.get('window').width} // 화면 너비만큼 채우기
-          height={200} //그래프 높이
-          // yAxisLabel="$" //y축 첫글자
-          yAxisSuffix="번" //y축 끝글자
-          yAxisInterval={1} // optional, defaults to 1
-          chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#ffffff', //왼쪽 색(그라데이션)
-            backgroundGradientTo: '#ffffff', //오른쪽 색
-            decimalPlaces: 0, // optional, defaults to 2dp
-            color: (opacity = 1) => `rgba(52, 130, 208, ${opacity})`, //막대, 점선 색
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, //글자 색
-            barPercentage: 0.8, //막대 너비
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '5',
-              stroke: '#ffa726',
-            },
-          }}
-          bezier //선그래프에서 곡선옵션
-          style={{
-            marginVertical: 8, //그래프 위 마진
-            borderRadius: 0, //그림 테두리 둥근정도
-          }}
+          yAxisLabelTexts={['0번', '1번', ' 2번', ' 3번', ' 4번', '5번', '6번']}
+          frontColor={'rgba(168, 205, 240, 1)'}
         />
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </View>
   );
 }
 
-const chartConfig = {
-  backgroundGradientFrom: '#1E2923',
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: '#08130D',
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-  strokeWidth: 2, // optional, default 3
-  barPercentage: 0.5,
-  useShadowColorFromDataset: false, // optional
-};
-
 const styles = StyleSheet.create({
   title: {
-    fontSize: 20,
-    color: 'black',
-    marginTop: 25,
-    marginBottom: 5,
-    marginLeft: 10,
+    fontSize: 18,
+    color: '#454545',
+    marginStart: 20,
+    fontWeight: 'bold',
   },
-  block: {
-    width: '70%',
-    height: 80,
-    marginLeft: 60,
-    //flex: 1,
-    alignItems: 'center', //가로 가운데
-    justifyContent: 'center', //세로
+  reportBoxContainer: {
+    justifyContent: 'space-between',
     flexDirection: 'row',
-    borderStyle: 'solid',
-    borderRadius: 50 / 2,
-    borderWidth: 2,
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    height: 180,
   },
-  titleDate: {
-    fontSize: 30,
-    color: 'black',
+  box: {
+    backgroundColor: '#f5f5f5',
+    borderRadius: 15,
+    height: '100%',
+    width: '100%',
+    marginEnd: 10,
+    flexDirection: 'row',
+  },
+  categoryText: {fontSize: 15, marginStart: 20, marginEnd: 10},
+  chipWrapper: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+  },
+  chip: {
+    marginEnd: 5,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(152,196,102,0.25)',
+  },
+  chipText: {
+    color: '#454545',
+    fontSize: 15,
+  },
+  pieChart: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '43%',
+  },
+  pieChartDescription: {
+    justifyContent: 'center',
+    width: '57%',
+  },
+  contentWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 5,
   },
-  full: {
-    //flex: 1,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    backgroundColor: 'white',
+  contentItemBox: {
+    backgroundColor: '#dbdbdb',
+    alignSelf: 'baseline',
+    paddingHorizontal: 10,
+    height: 23,
+    justifyContent: 'center',
+    borderRadius: 8,
   },
-  padding: {
-    paddingLeft: 5,
+  contentItem: {
+    color: '#ffffff',
+    fontSize: 12,
   },
-  image: {
-    width: 30,
-    marginHorizontal: 15,
-    marginTop: 5,
-    height: 30,
+  rowContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  contenItemText: {
+    fontSize: 15,
+    marginStart: 10,
+    color: '#454545',
+  },
+  pieDescriptionTitle: {
+    fontSize: 14,
+    color: '#454545',
+  },
+  barGraphContainer: {
+    width: '100%',
+    marginHorizontal: 20,
+    backgroundColor: '#f5f5f5',
+    justifyContent: 'center',
+  },
+  barchart: {
+    marginTop: 10,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    alignSelf: 'stretch',
+    padding: 10,
+  },
+  titleHeader: {
+    paddingTop: 20,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+  },
+  icon: {
+    alignSelf: 'flex-end',
+    marginEnd: 25,
   },
 });
 

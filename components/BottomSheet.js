@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   PanResponder,
-  Platform,
   KeyboardAvoidingView,
 } from 'react-native';
 
@@ -74,12 +73,14 @@ const BottomSheet = ({
       animationType={'fade'}
       transparent
       statusBarTranslucent>
-      <View style={styles.overlay}>
-        <TouchableWithoutFeedback onPress={closeModal}>
-          <View style={styles.background} />
-        </TouchableWithoutFeedback>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : null}>
+      <KeyboardAvoidingView
+        style={styles.KeyboardAvoidingView}
+        behavior={'padding'}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback onPress={closeModal}>
+            <View style={styles.background} />
+          </TouchableWithoutFeedback>
+
           <Animated.View
             style={
               addTodo
@@ -100,13 +101,16 @@ const BottomSheet = ({
             {...panResponders.panHandlers}>
             {children}
           </Animated.View>
-        </KeyboardAvoidingView>
-      </View>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
+  KeyboardAvoidingView: {
+    flex: 1,
+  },
   overlay: {
     flex: 1,
     justifyContent: 'flex-end',

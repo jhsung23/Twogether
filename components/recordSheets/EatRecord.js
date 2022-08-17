@@ -60,7 +60,7 @@ function EatingRecord({order, onSubmit}) {
 
     const code = user.code; //공유 코드
     const id = user.id; //uid
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = food[selectedFood];
     const how = vol[selectedVol];
 
@@ -77,6 +77,7 @@ function EatingRecord({order, onSubmit}) {
     });
 
     const state = await getBadgeAchieveState({id, badgeNumber: 3});
+    console.log(state.achieve);
 
     if (!state.achieve) {
       Alert.alert(
@@ -96,12 +97,12 @@ function EatingRecord({order, onSubmit}) {
     events.emit('chartUpdate');
   }, [
     onSubmit,
-    order,
     user.code,
     user.id,
-    user.displayName,
+    user.photoURL,
     selectedFood,
     selectedVol,
+    order,
     date,
     memo,
   ]);

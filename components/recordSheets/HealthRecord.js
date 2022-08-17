@@ -47,7 +47,7 @@ function HealthRecord({order, onSubmit}) {
 
     const id = user.id; //uid
     const code = user.code; //공유 코드
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = category[selectedCategory];
 
     await createHealthRecord({
@@ -83,7 +83,7 @@ function HealthRecord({order, onSubmit}) {
     onSubmit,
     user.id,
     user.code,
-    user.displayName,
+    user.photoURL,
     selectedCategory,
     order,
     height,

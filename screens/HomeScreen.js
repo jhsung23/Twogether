@@ -228,7 +228,9 @@ const styles = StyleSheet.create({
   },
   TopContainer: {
     flexDirection: 'row',
+    marginTop: 20,
     justifyContent: 'space-between',
+    alignItems: 'center',
     flex: 1,
   },
   dateText: {
@@ -257,6 +259,7 @@ const styles = StyleSheet.create({
     borderRadius: 21,
     marginEnd: 25,
     marginTop: 30,
+    marginBottom: 10,
   },
   list: {
     paddingTop: 15,

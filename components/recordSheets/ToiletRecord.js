@@ -54,7 +54,7 @@ function ToiletRecord({order, onSubmit}) {
 
     const id = user.id;
     const code = user.code;
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = category[selectedCategory];
     const how = vol[selectedVol];
 
@@ -71,6 +71,7 @@ function ToiletRecord({order, onSubmit}) {
     });
 
     const state = await getBadgeAchieveState({id, badgeNumber: 4});
+    console.log(state.achieve);
 
     if (!state.achieve) {
       Alert.alert(
@@ -88,20 +89,14 @@ function ToiletRecord({order, onSubmit}) {
     events.emit('badgeUpdate');
     events.emit('chartUpdate');
     events.emit('recordScreenUpdate');
-
-    Alert.alert(
-      '🎉축하합니다!🎉',
-      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
-      [{text: '확인', onPress: () => {}, style: 'cancel'}],
-    );
   }, [
     onSubmit,
-    order,
     user.id,
     user.code,
-    user.displayName,
+    user.photoURL,
     selectedCategory,
     selectedVol,
+    order,
     date,
     memo,
   ]);

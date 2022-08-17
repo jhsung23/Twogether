@@ -55,7 +55,7 @@ function EtcRecord({order, onSubmit}) {
 
     const id = user.id;
     const code = user.code;
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = category[selectedCategory];
     const diff = timeDiff;
 
@@ -96,14 +96,14 @@ function EtcRecord({order, onSubmit}) {
     events.emit('recordScreenUpdate');
   }, [
     onSubmit,
-    order,
     user.id,
     user.code,
-    user.displayName,
+    user.photoURL,
     selectedCategory,
+    timeDiff,
+    order,
     startDate,
     endDate,
-    timeDiff,
     memo,
   ]);
 
