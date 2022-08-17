@@ -76,6 +76,7 @@ function SleepRecord({order, onSubmit}) {
 
     events.emit('refresh');
     events.emit('badgeUpdate');
+    events.emit('chartUpdate');
     events.emit('recordScreenUpdate');
 
     Alert.alert(
