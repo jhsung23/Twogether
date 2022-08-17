@@ -18,6 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
 import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
+import {createCount} from '../../lib/statistics';
 
 const foodChips = [
   {id: 1, content: '모유'},
@@ -60,7 +61,7 @@ function EatingRecord({order, onSubmit}) {
 
     const code = user.code; //공유 코드
     const id = user.id; //uid
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = food[selectedFood];
     const how = vol[selectedVol];
 
@@ -76,7 +77,12 @@ function EatingRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
+    await createCount({code, id}).catch(error => {
+      console.log(error.message);
+    });
+
     const state = await getBadgeAchieveState({id, badgeNumber: 3});
+    console.log(state.achieve);
 
     if (!state.achieve) {
       Alert.alert(
@@ -94,14 +100,15 @@ function EatingRecord({order, onSubmit}) {
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
     events.emit('chartUpdate');
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
-    order,
     user.code,
     user.id,
-    user.displayName,
+    user.photoURL,
     selectedFood,
     selectedVol,
+    order,
     date,
     memo,
   ]);

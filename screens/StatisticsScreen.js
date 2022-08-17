@@ -1,17 +1,22 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet} from 'react-native';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import ChartKit from '../components/ChartKit';
 
 function StatisticsScreen() {
   return (
-    <View>
-      <ChartKit />
-    </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.block}>
+        <ScrollView>
+          <ChartKit />
+        </ScrollView>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
 const styles = StyleSheet.create({
-  block: {},
+  block: {flex: 1, backgroundColor: 'white', paddingTop: 20},
 });
 
 export default StatisticsScreen;

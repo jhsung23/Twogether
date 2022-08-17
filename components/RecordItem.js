@@ -82,7 +82,11 @@ function RecordItem({type, how, memo, what, when, whenEnd, diff, writer}) {
               }}>
               <Text style={styles.contentItem}>특이사항</Text>
             </View>
-            <Text style={styles.contentValue}>{memo}</Text>
+            {memo.length === 0 ? (
+              <Text style={styles.noneContentValue}>없음</Text>
+            ) : (
+              <Text style={styles.contentValue}>{memo}</Text>
+            )}
           </View>
         </View>
         <View style={styles.rightWidth}>
@@ -91,7 +95,9 @@ function RecordItem({type, how, memo, what, when, whenEnd, diff, writer}) {
             source={
               writer === undefined
                 ? require('../assets/user.png')
-                : {uri: writer}
+                : {
+                    uri: writer,
+                  }
             }
             resizeMode="cover"
           />
@@ -117,11 +123,12 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 5,
+    borderRadius: 5,
   },
   content: {
     flex: 1,
     flexDirection: 'row',
-    marginLeft: 5,
+    marginLeft: 7,
     paddingVertical: 10,
     paddingHorizontal: 10,
     borderRadius: 10,
@@ -160,6 +167,12 @@ const styles = StyleSheet.create({
     marginEnd: 10,
     fontSize: 15,
     color: '#454545',
+  },
+  noneContentValue: {
+    marginStart: 6,
+    marginEnd: 10,
+    fontSize: 15,
+    color: '#b0b0b0',
   },
   userPhoto: {
     width: 26,

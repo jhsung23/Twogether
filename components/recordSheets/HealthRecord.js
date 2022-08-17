@@ -18,6 +18,7 @@ import {createHealthRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
+import {createCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '외래진료'},
@@ -47,7 +48,7 @@ function HealthRecord({order, onSubmit}) {
 
     const id = user.id; //uid
     const code = user.code; //공유 코드
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = category[selectedCategory];
 
     await createHealthRecord({
@@ -60,6 +61,10 @@ function HealthRecord({order, onSubmit}) {
       date,
       memo,
     }).catch(error => {
+      console.log(error.message);
+    });
+
+    await createCount({code, id}).catch(error => {
       console.log(error.message);
     });
 
@@ -79,11 +84,12 @@ function HealthRecord({order, onSubmit}) {
 
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
     user.id,
     user.code,
-    user.displayName,
+    user.photoURL,
     selectedCategory,
     order,
     height,

@@ -18,6 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createEtcRecord} from '../../lib/records';
 import events from '../../lib/events';
+import {createCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '체험'},
@@ -55,7 +56,7 @@ function EtcRecord({order, onSubmit}) {
 
     const id = user.id;
     const code = user.code;
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = category[selectedCategory];
     const diff = timeDiff;
 
@@ -69,6 +70,10 @@ function EtcRecord({order, onSubmit}) {
       diff,
       memo,
     }).catch(error => {
+      console.log(error.message);
+    });
+
+    await createCount({code, id}).catch(error => {
       console.log(error.message);
     });
 
@@ -94,16 +99,17 @@ function EtcRecord({order, onSubmit}) {
 
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
-    order,
     user.id,
     user.code,
-    user.displayName,
+    user.photoURL,
     selectedCategory,
+    timeDiff,
+    order,
     startDate,
     endDate,
-    timeDiff,
     memo,
   ]);
 

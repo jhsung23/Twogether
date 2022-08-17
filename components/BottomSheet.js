@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   PanResponder,
-  Platform,
   KeyboardAvoidingView,
 } from 'react-native';
 

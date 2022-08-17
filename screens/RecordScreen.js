@@ -216,8 +216,7 @@ function RecordScreen() {
 }
 
 const renderItem = ({item}) => {
-  const {type, how, memo, what, when, whenEnd, diff} = item;
-  console.log('RecordItem', item);
+  const {type, how, memo, what, when, whenEnd, diff, writer} = item;
 
   return (
     <RecordItem
@@ -228,6 +227,7 @@ const renderItem = ({item}) => {
       when={when}
       whenEnd={whenEnd}
       diff={diff}
+      writer={writer}
     />
   );
 };

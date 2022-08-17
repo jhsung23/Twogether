@@ -18,6 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
 import events from '../../lib/events';
 import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
+import {createCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '낮잠'},
@@ -44,7 +45,7 @@ function SleepRecord({order, onSubmit}) {
 
     const code = user.code; //공유 코드
     const id = user.id;
-    const writer = user.displayName;
+    const writer = user.photoURL;
     const what = category[selectedCategory];
     const diff = timeDiff;
 
@@ -59,6 +60,10 @@ function SleepRecord({order, onSubmit}) {
       memo,
     });
 
+    await createCount({code, id}).catch(error => {
+      console.log(error.message);
+    });
+
     const state = await getBadgeAchieveState({id, badgeNumber: 2});
 
     if (!state.achieve) {
@@ -70,7 +75,6 @@ function SleepRecord({order, onSubmit}) {
     }
 
     await updateBadgeAchieve({id, badgeNumber: 2}).catch(error => {
-      console.log('update problem');
       console.log(error.message);
     });
 
@@ -78,22 +82,17 @@ function SleepRecord({order, onSubmit}) {
     events.emit('badgeUpdate');
     events.emit('chartUpdate');
     events.emit('recordScreenUpdate');
-
-    Alert.alert(
-      '🎉축하합니다!🎉',
-      '\n배지를 획득하였습니다.\n배지 탭에서 확인해보세요.',
-      [{text: '확인', onPress: () => {}, style: 'cancel'}],
-    );
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
-    order,
     user.code,
     user.id,
-    user.displayName,
+    user.photoURL,
     selectedCategory,
+    timeDiff,
+    order,
     startDate,
     endDate,
-    timeDiff,
     memo,
   ]);
 
