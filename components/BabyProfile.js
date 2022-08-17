@@ -1,8 +1,5 @@
-import React, {useEffect} from 'react';
-import {useState} from 'react';
-import {FlatList, Image, StyleSheet, Text, View} from 'react-native';
-import {getUser} from '../lib/users';
-import {useUserContext} from '../contexts/UserContext';
+import React from 'react';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
 function BabyProfile({
   name, //이름
@@ -10,38 +7,46 @@ function BabyProfile({
   order,
 }) {
   return (
-    <FlatList
-      ListHeaderComponent={
-        <View style={styles.babyProfile}>
+    <View style={styles.container}>
+      <View style={styles.babyImageWrapper}>
+        <View style={styles.babyImageBackground}>
           <Image
             source={require('../assets/baby.png')}
             resizeMode="cover"
-            style={styles.avatar}
+            style={styles.babyImage}
           />
-          <Text style={styles.babyName}>
-            {name}(만 {age}세)
-          </Text>
         </View>
-      }
-    />
+        <Text style={styles.babyInfoText}>{name}</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 64 / 2,
+  container: {
+    width: 70,
+    height: 100,
+    marginEnd: 20,
   },
-  babyProfile: {
-    paddingTop: 10,
-    paddingBottom: 64,
-    marginLeft: 20,
+  babyImageWrapper: {
+    width: '100%',
   },
-  babyName: {
-    marginLeft: 5,
-    marginTop: 5,
-    color: '#424242',
+  babyImageBackground: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
+    width: '100%',
+    borderRadius: 35,
+    height: 70,
+  },
+  babyImage: {
+    width: 50,
+    height: 50,
+  },
+  babyInfoText: {
+    alignSelf: 'center',
+    marginTop: 3,
+    fontSize: 15,
   },
 });
 

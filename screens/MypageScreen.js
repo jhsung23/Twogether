@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   View,
   Platform,
+  Image,
   Text,
   ToastAndroid,
   FlatList,
@@ -11,21 +12,26 @@ import {
 } from 'react-native';
 import {useEffect} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import Profile from '../components/Profile';
 import {useUserContext} from '../contexts/UserContext';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {signOut} from '../lib/auth';
 import BabyProfile from '../components/BabyProfile';
 import {getBaby} from '../lib/baby';
 import events from '../lib/events';
+import AddBabyProfile from '../components/AddBabyProfile';
 
 function MypageScreen() {
   const route = useRoute();
   const navigation = useNavigation();
+  // eslint-disable-next-line no-unused-vars
   const {userId, displayName} = route.params ?? {};
 
   const {user} = useUserContext();
   const {setUser} = useUserContext();
+
+  // const id = user.id;
+  const name = user.displayName;
+  const role = user.role;
   const code = user.code;
 
   const [babyInfo, setBabyInfo] = useState();
@@ -35,6 +41,8 @@ function MypageScreen() {
       title: displayName,
     });
   }, [navigation, displayName]);
+
+  useEffect(() => {});
 
   //아기 정보 가져오기
   useEffect(() => {
@@ -62,93 +70,130 @@ function MypageScreen() {
     }
   };
 
-  //임시 로그아웃 기능
+  //로그아웃
   const onLogout = async () => {
     await signOut();
     setUser(null);
   };
 
-  const renderTodayInfo = ({item}) => {
+  const renderBabyInfo = ({item}) => {
     return <BabyProfile name={item.name} age={item.age} order={item.order} />;
   };
 
   return (
     <SafeAreaView style={styles.block}>
-      <Profile userId={userId} />
-
-      <View style={styles.line} />
-
-      <View style={styles.back1}>
-        <View>
-          <Text style={styles.menuText}>아이</Text>
-          <FlatList
-            data={babyInfo}
-            renderItem={renderTodayInfo}
-            keyExtractor={item => item.id}
-            showsHorizontalScrollIndicator={false}
-            horizontal={true}
+      <View style={styles.userInfoContainer}>
+        <View style={styles.userImageWrapper}>
+          <Image
+            source={
+              user.photoURL
+                ? {uri: user.photoURL}
+                : require('../assets/user.png')
+            }
+            resizeMode="cover"
+            style={styles.userImage}
           />
         </View>
-      </View>
-
-      <View style={styles.line} />
-      <View style={styles.back2}>
-        <View>
-          <Text style={styles.menuText}>설정</Text>
-        </View>
-        <View style={styles.line} />
-        <View>
-          <TouchableOpacity onPress={copyToClipboard}>
-            <Text style={styles.menuText}>공동 양육자 초대하기</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.line} />
-        <View>
-          <Text style={styles.menuText}>알림 설정하기</Text>
-        </View>
-        <View style={styles.line} />
-
-        <View>
-          <TouchableOpacity onPress={onLogout}>
-            <Text style={styles.menuText}>로그아웃</Text>
-          </TouchableOpacity>
+        <View style={styles.userNameWrapper}>
+          <Text style={styles.userNameText}>{name} 님, 반가워요!</Text>
+          <View style={styles.userRoleWrapper}>
+            <Text style={styles.userRoleText}>{role}</Text>
+          </View>
         </View>
       </View>
+
+      <View style={styles.lightLine} />
+
+      <Text style={styles.title}>아기</Text>
+      <FlatList
+        data={babyInfo}
+        renderItem={renderBabyInfo}
+        keyExtractor={item => item.id}
+        horizontal={true}
+        style={styles.list}
+        ListFooterComponent={<AddBabyProfile />}
+      />
+
+      <View style={styles.boldLine} />
+
+      <Text style={styles.title}>기타</Text>
+      <TouchableOpacity onPress={copyToClipboard}>
+        <Text style={styles.menuText}>공동 양육자 초대하기</Text>
+      </TouchableOpacity>
+      <Text style={styles.menuText}>앱 설정</Text>
+      <TouchableOpacity onPress={onLogout}>
+        <Text style={styles.menuText}>로그아웃</Text>
+      </TouchableOpacity>
+      <Text style={styles.menuText}>회원탈퇴</Text>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   block: {flex: 1, backgroundColor: 'white'},
-  co: {
-    height: '80%',
-    //flex: 0.3,
-    flexGrow: 0,
-    paddingTop: 50,
-    //marginHorizontal: 20,
-    marginTop: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  back1: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  back2: {
-    flex: 1.3,
-    backgroundColor: 'white',
-  },
-  line: {
-    flex: 0.01,
-    backgroundColor: '#454545',
-  },
-
   menuText: {
     color: '#454545',
-    marginTop: 10,
-    marginBottom: 10,
     marginStart: 20,
-    fontWeight: 'bold',
+    marginTop: 20,
     fontSize: 18,
+  },
+  userInfoContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    marginHorizontal: 20,
+    height: 100,
+    marginBottom: 10,
+  },
+  userImageWrapper: {
+    width: '30%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userImage: {width: '70%', height: '70%', borderRadius: 100},
+  userNameWrapper: {
+    width: '70%',
+    padding: 10,
+    marginTop: 10,
+  },
+  userNameText: {
+    color: '#454545',
+    fontSize: 23,
+    fontWeight: 'bold',
+  },
+  userRoleWrapper: {
+    marginTop: 10,
+    alignSelf: 'baseline',
+    paddingHorizontal: 10,
+    height: 25,
+    backgroundColor: 'rgba(152,196,102,0.5)',
+    justifyContent: 'center',
+    borderRadius: 10,
+  },
+  userRoleText: {
+    color: 'white',
+    fontSize: 17,
+  },
+  lightLine: {
+    height: 2,
+    backgroundColor: '#f5f5f5',
+  },
+  boldLine: {
+    height: 13,
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontWeight: 'bold',
+    color: '#454545',
+    fontSize: 19,
+    marginTop: 20,
+    marginStart: 20,
+  },
+  list: {
+    paddingHorizontal: 20,
+    marginTop: 15,
+    marginBottom: 5,
+    // backgroundColor: 'pink',
+    flexGrow: 0,
   },
 });
 

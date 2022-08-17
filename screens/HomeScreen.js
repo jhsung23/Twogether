@@ -13,6 +13,7 @@ import {
   Platform,
   LogBox,
   Image,
+  Alert,
 } from 'react-native';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import SplashScreen from 'react-native-splash-screen';
@@ -77,6 +78,14 @@ function HomeScreen() {
       SplashScreen.hide();
     }
   }, [babyInfoReady]);
+
+  useEffect(() => {
+    Alert.alert(
+      '🎉축하합니다!🎉',
+      '\n첫 아이 등록 배지를 획득했습니다.\n배지 탭에서 확인해보세요.',
+      [{text: '확인', onPress: () => {}, style: 'cancel'}],
+    );
+  }, []);
 
   // 페이지 당기면 reload (새로고침 기능 대체)
   const wait = timeout => {
