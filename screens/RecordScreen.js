@@ -236,9 +236,9 @@ const styles = StyleSheet.create({
   block: {flex: 1, backgroundColor: 'white'},
   image: {width: 32, height: 32},
   calendar: {
-    height: 80,
+    height: 90,
     paddingTop: 15,
-    paddingBottom: 10,
+    paddingBottom: 5,
   },
   textColor: {color: '#454545'},
   noneView: {flex: 1, justifyContent: 'center', alignItems: 'center'},
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 5,
     marginBottom: 15,
   },
   chip: {
