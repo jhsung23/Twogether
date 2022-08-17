@@ -105,12 +105,14 @@ function ChartKit() {
   useEffect(() => {
     events.addListener('statisticsBadgeUpdate', badgeUpdate);
 
-    return events.removeListener('statisticsBadgeUpdate', badgeUpdate);
+    return () => {
+      events.removeListener('statisticsBadgeUpdate', badgeUpdate);
+    };
   }, [badgeUpdate]);
 
   const widthAndHeight = 110;
   const series = [!count ? 0 : count.length ? count.length : 0, 4]; //자기자신이 0번, 파트너 1번
-  const sliceColor = ['rgba(255, 211, 99,0.7)', '#efefef'];
+  const sliceColor = ['rgba(255, 211, 99,0.7)', '#ffe8b3'];
 
   const eatData = [
     {label: '08.14', value: 4},
@@ -155,17 +157,19 @@ function ChartKit() {
                 {!count ? 0 : count.length ? count.length : 0}회
               </Text>
             </View>
+
             <View style={styles.rowContent}>
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>획득한 배지 개수</Text>
               </View>
               <Text style={styles.contenItemText}>{achieveBadge}개</Text>
             </View>
+
             <View style={styles.rowContent}>
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>배우자의 기록 횟수 </Text>
               </View>
-              <Text style={styles.contenItemText}>3개</Text>
+              <Text style={styles.contenItemText}>3회</Text>
             </View>
           </View>
         </View>
@@ -369,7 +373,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 20,
     paddingTop: 10,
-    paddingBottom: 10,
     height: 180,
   },
   box: {

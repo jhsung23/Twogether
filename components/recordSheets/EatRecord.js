@@ -100,6 +100,7 @@ function EatingRecord({order, onSubmit}) {
     events.emit('badgeUpdate');
     events.emit('recordScreenUpdate');
     events.emit('chartUpdate');
+    events.emit('statisticsBadgeUpdate');
   }, [
     onSubmit,
     user.code,
