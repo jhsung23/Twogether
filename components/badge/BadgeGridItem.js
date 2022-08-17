@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
   achieveText: {
     marginTop: 4,
     color: '454545',
-    fontSize: 11,
+    fontSize: 10,
   },
 });
 

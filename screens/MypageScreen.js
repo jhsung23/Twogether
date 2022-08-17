@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -10,10 +10,10 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {useEffect} from 'react';
+import Clipboard from '@react-native-clipboard/clipboard';
+
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useUserContext} from '../contexts/UserContext';
-import Clipboard from '@react-native-clipboard/clipboard';
 import {signOut} from '../lib/auth';
 import BabyProfile from '../components/BabyProfile';
 import {getBaby} from '../lib/baby';

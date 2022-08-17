@@ -1,26 +1,44 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 
+import BottomSheet from './BottomSheet';
+import useModal from '../utils/modal';
+import RegisterBaby from './RegisterBaby';
+
 function AddBabyProfile({
   name, //이름
   age, //나이
   order,
 }) {
+  const [isOpenModal, openModal, closeModal] = useModal();
+
+  const pressRegisterBaby = () => {
+    openModal();
+  };
+
   return (
-    <TouchableOpacity>
-      <View style={styles.container}>
-        <View style={styles.babyImageWrapper}>
-          <View style={styles.babyImageBackground}>
-            <Image
-              source={require('../assets/add.png')}
-              resizeMode="cover"
-              style={styles.babyImage}
-            />
+    <View>
+      <TouchableOpacity onPress={pressRegisterBaby}>
+        <View style={styles.container}>
+          <View style={styles.babyImageWrapper}>
+            <View style={styles.babyImageBackground}>
+              <Image
+                source={require('../assets/add.png')}
+                resizeMode="cover"
+                style={styles.babyImage}
+              />
+            </View>
+            <Text style={styles.babyInfoText}>추가</Text>
           </View>
-          <Text style={styles.babyInfoText}>추가</Text>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <BottomSheet
+        modalVisible={isOpenModal}
+        onClose={closeModal}
+        registerBaby={true}>
+        <RegisterBaby onSubmit={closeModal} additional />
+      </BottomSheet>
+    </View>
   );
 }
 
