@@ -1,15 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
-// import {BarChart} from 'react-native-chart-kit';
 import {BarChart} from 'react-native-gifted-charts';
-import {format, add} from 'date-fns';
-import {ko} from 'date-fns/locale';
-import {
-  Dimensions,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Chip} from 'react-native-paper';
 import PieChart from 'react-native-pie-chart';
 import Tooltip from 'react-native-walkthrough-tooltip';
@@ -22,12 +13,9 @@ import {getBabyOrder} from '../lib/baby';
 import {getMyCount, getPartnerCount} from '../lib/statistics';
 import {getAchieveBadges} from '../lib/badge';
 
-const screenWidth = Dimensions.get('window').width;
 const orderKor = [{1: '첫째'}, {2: '둘째'}, {3: '셋째'}, {4: '넷째'}];
 
 function ChartKit() {
-  const date = new Date();
-
   const {user} = useUserContext();
   const id = user.id;
   const code = user.code;
@@ -189,23 +177,23 @@ function ChartKit() {
       <Text style={styles.title}>우리 아이 기록 통계</Text>
       <View style={styles.chipWrapper}>
         <Text style={styles.categoryText}>아기 구분</Text>
-        {category.map(({id}) => (
+        {category.map(({id: categoryId}) => (
           <Chip
-            key={id}
+            key={categoryId}
             style={styles.chip}
             textStyle={styles.chipText}
             height={30}
-            icon={id === selectedChip ? 'check' : null}
-            selected={id === selectedChip}
+            icon={categoryId === selectedChip ? 'check' : null}
+            selected={categoryId === selectedChip}
             onPress={() => {
-              if (id === selectedChip) {
+              if (categoryId === selectedChip) {
                 setSelectedChip(null);
               } else {
-                setSelectedChip(id);
-                setOrder(id + '');
+                setSelectedChip(categoryId);
+                setOrder(categoryId + '');
               }
             }}>
-            {orderKor[parseInt(id, 10) - 1][id]}
+            {orderKor[parseInt(categoryId, 10) - 1][categoryId]}
           </Chip>
         ))}
       </View>

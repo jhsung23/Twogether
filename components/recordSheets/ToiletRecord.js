@@ -18,7 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import {createToiletRecord} from '../../lib/records';
 import events from '../../lib/events';
-import {createCount} from '../../lib/statistics';
+import {updateCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '소변'},
@@ -71,7 +71,7 @@ function ToiletRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
-    await createCount({code, id}).catch(error => {
+    await updateCount({code, id}).catch(error => {
       console.log(error.message);
     });
 

@@ -18,7 +18,7 @@ import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {createSleepRecord} from '../../lib/records';
 import events from '../../lib/events';
 import {updateBadgeAchieve, getBadgeAchieveState} from '../../lib/badge';
-import {createCount} from '../../lib/statistics';
+import {updateCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '낮잠'},
@@ -60,7 +60,7 @@ function SleepRecord({order, onSubmit}) {
       memo,
     });
 
-    await createCount({code, id}).catch(error => {
+    await updateCount({code, id}).catch(error => {
       console.log(error.message);
     });
 

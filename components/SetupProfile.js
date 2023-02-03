@@ -22,7 +22,6 @@ import CustomButton from './CustomButton';
 import {useUserContext} from '../contexts/UserContext';
 import RegisterBaby from './RegisterBaby';
 import {createBaby} from '../lib/baby';
-import {createCount} from '../lib/statistics';
 import {
   createBadge1,
   createBadge2,
@@ -122,11 +121,8 @@ function SetupProfile() {
     const userInfo = await getUser({id: uid});
     setUser(userInfo);
 
-    createCount({code, id: uid});
-
     //badge 등록
     const id = userInfo.id;
-    console.log(id);
     createBadge1({id});
     createBadge2({id});
     createBadge3({id});
