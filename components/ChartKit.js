@@ -19,7 +19,7 @@ import {useUserContext} from '../contexts/UserContext';
 import {getEat, getToilet, getSleep} from '../lib/records';
 import events from '../lib/events';
 import {getBabyOrder} from '../lib/baby';
-import {getCount} from '../lib/statistics';
+import {getMyCount, getPartnerCount} from '../lib/statistics';
 import {getAchieveBadges} from '../lib/badge';
 
 const screenWidth = Dimensions.get('window').width;
@@ -31,8 +31,10 @@ function ChartKit() {
   const {user} = useUserContext();
   const id = user.id;
   const code = user.code;
+  const partnerId = user.partnerId;
 
-  const [count, setCount] = useState();
+  const [myCount, setMyCount] = useState(0);
+  const [partnerCount, setPartnerCount] = useState(0);
   const [achieveBadge, setAchieveBadge] = useState();
   const [eat, setEat] = useState();
   const [toilet, setToilet] = useState();
@@ -55,14 +57,16 @@ function ChartKit() {
 
   // firebase에서 칩 세팅을 위한 자녀 명수 정보 load
   useEffect(() => {
-    console.log('chip setting');
     getBabyOrder({code}).then(setCategory);
   }, [code]);
 
-  //count 정보 load
+  //myCount 정보 load
   useEffect(() => {
-    getCount({code, id}).then(setCount);
-  }, [code, id]);
+    getMyCount({code, id}).then(setMyCount);
+    if (partnerId) {
+      getPartnerCount({code, partnerId}).then(setPartnerCount);
+    }
+  }, [code, id, partnerId]);
 
   //사용자의 뱃지 현황 가져오기
   useEffect(() => {
@@ -87,8 +91,11 @@ function ChartKit() {
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
-    getCount({code, id}).then(setCount);
-  }, [code, order, id]);
+    getMyCount({code, id}).then(setMyCount);
+    if (partnerId) {
+      getPartnerCount({code, partnerId}).then(setPartnerCount);
+    }
+  }, [code, order, id, partnerId]);
 
   useEffect(() => {
     events.addListener('chartUpdate', chartUpdate);
@@ -112,7 +119,10 @@ function ChartKit() {
   }, [badgeUpdate]);
 
   const widthAndHeight = 110;
-  const series = [!count ? 0 : count.length ? count.length : 0, 4]; //자기자신이 0번, 파트너 1번
+  const series = [
+    myCount,
+    myCount === 0 && partnerCount === 0 ? 1 : partnerCount,
+  ];
   const sliceColor = ['rgba(255, 211, 99,0.7)', 'rgba(255, 232, 179, 0.6)'];
 
   const eatData = [
@@ -154,9 +164,7 @@ function ChartKit() {
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>나의 기록 횟수</Text>
               </View>
-              <Text style={styles.contenItemText}>
-                {!count ? 0 : count.length ? count.length : 0}회
-              </Text>
+              <Text style={styles.contenItemText}>{myCount}회</Text>
             </View>
 
             <View style={styles.rowContent}>
@@ -170,7 +178,9 @@ function ChartKit() {
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>배우자의 기록 횟수 </Text>
               </View>
-              <Text style={styles.contenItemText}>3회</Text>
+              <Text style={styles.contenItemText}>
+                {partnerId === '' ? '미등록' : `${partnerCount}회`}
+              </Text>
             </View>
           </View>
         </View>
