@@ -12,7 +12,7 @@ export const formatDate = date => {
   const yyyy = date.getFullYear();
   const m = date.getMonth() + 1 + '';
   const mm = m.padStart(2, '0');
-  const dd = date.getDate();
+  const dd = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
 
   return `${yyyy}${mm}${dd}`;
 };

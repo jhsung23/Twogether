@@ -1,15 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react';
-// import {BarChart} from 'react-native-chart-kit';
 import {BarChart} from 'react-native-gifted-charts';
-import {format, add} from 'date-fns';
-import {ko} from 'date-fns/locale';
-import {
-  Dimensions,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Chip} from 'react-native-paper';
 import PieChart from 'react-native-pie-chart';
 import Tooltip from 'react-native-walkthrough-tooltip';
@@ -19,20 +10,19 @@ import {useUserContext} from '../contexts/UserContext';
 import {getEat, getToilet, getSleep} from '../lib/records';
 import events from '../lib/events';
 import {getBabyOrder} from '../lib/baby';
-import {getCount} from '../lib/statistics';
+import {getMyCount, getPartnerCount} from '../lib/statistics';
 import {getAchieveBadges} from '../lib/badge';
 
-const screenWidth = Dimensions.get('window').width;
 const orderKor = [{1: '첫째'}, {2: '둘째'}, {3: '셋째'}, {4: '넷째'}];
 
 function ChartKit() {
-  const date = new Date();
-
   const {user} = useUserContext();
   const id = user.id;
   const code = user.code;
+  const partnerId = user.partnerId;
 
-  const [count, setCount] = useState();
+  const [myCount, setMyCount] = useState(0);
+  const [partnerCount, setPartnerCount] = useState(0);
   const [achieveBadge, setAchieveBadge] = useState();
   const [eat, setEat] = useState();
   const [toilet, setToilet] = useState();
@@ -55,14 +45,16 @@ function ChartKit() {
 
   // firebase에서 칩 세팅을 위한 자녀 명수 정보 load
   useEffect(() => {
-    console.log('chip setting');
     getBabyOrder({code}).then(setCategory);
   }, [code]);
 
-  //count 정보 load
+  //myCount 정보 load
   useEffect(() => {
-    getCount({code, id}).then(setCount);
-  }, [code, id]);
+    getMyCount({code, id}).then(setMyCount);
+    if (partnerId) {
+      getPartnerCount({code, partnerId}).then(setPartnerCount);
+    }
+  }, [code, id, partnerId]);
 
   //사용자의 뱃지 현황 가져오기
   useEffect(() => {
@@ -87,8 +79,11 @@ function ChartKit() {
     getEat({code, order}).then(setEat);
     getToilet({code, order}).then(setToilet);
     getSleep({code, order}).then(setSleep);
-    getCount({code, id}).then(setCount);
-  }, [code, order, id]);
+    getMyCount({code, id}).then(setMyCount);
+    if (partnerId) {
+      getPartnerCount({code, partnerId}).then(setPartnerCount);
+    }
+  }, [code, order, id, partnerId]);
 
   useEffect(() => {
     events.addListener('chartUpdate', chartUpdate);
@@ -112,7 +107,10 @@ function ChartKit() {
   }, [badgeUpdate]);
 
   const widthAndHeight = 110;
-  const series = [!count ? 0 : count.length ? count.length : 0, 4]; //자기자신이 0번, 파트너 1번
+  const series = [
+    myCount,
+    myCount === 0 && partnerCount === 0 ? 1 : partnerCount,
+  ];
   const sliceColor = ['rgba(255, 211, 99,0.7)', 'rgba(255, 232, 179, 0.6)'];
 
   const eatData = [
@@ -154,9 +152,7 @@ function ChartKit() {
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>나의 기록 횟수</Text>
               </View>
-              <Text style={styles.contenItemText}>
-                {!count ? 0 : count.length ? count.length : 0}회
-              </Text>
+              <Text style={styles.contenItemText}>{myCount}회</Text>
             </View>
 
             <View style={styles.rowContent}>
@@ -170,7 +166,9 @@ function ChartKit() {
               <View style={styles.contentItemBox}>
                 <Text style={styles.contentItem}>배우자의 기록 횟수 </Text>
               </View>
-              <Text style={styles.contenItemText}>3회</Text>
+              <Text style={styles.contenItemText}>
+                {partnerId === '' ? '미등록' : `${partnerCount}회`}
+              </Text>
             </View>
           </View>
         </View>
@@ -179,23 +177,23 @@ function ChartKit() {
       <Text style={styles.title}>우리 아이 기록 통계</Text>
       <View style={styles.chipWrapper}>
         <Text style={styles.categoryText}>아기 구분</Text>
-        {category.map(({id}) => (
+        {category.map(({id: categoryId}) => (
           <Chip
-            key={id}
+            key={categoryId}
             style={styles.chip}
             textStyle={styles.chipText}
             height={30}
-            icon={id === selectedChip ? 'check' : null}
-            selected={id === selectedChip}
+            icon={categoryId === selectedChip ? 'check' : null}
+            selected={categoryId === selectedChip}
             onPress={() => {
-              if (id === selectedChip) {
+              if (categoryId === selectedChip) {
                 setSelectedChip(null);
               } else {
-                setSelectedChip(id);
-                setOrder(id + '');
+                setSelectedChip(categoryId);
+                setOrder(categoryId + '');
               }
             }}>
-            {orderKor[parseInt(id, 10) - 1][id]}
+            {orderKor[parseInt(categoryId, 10) - 1][categoryId]}
           </Chip>
         ))}
       </View>

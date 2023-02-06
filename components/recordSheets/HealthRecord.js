@@ -18,7 +18,7 @@ import {createHealthRecord} from '../../lib/records';
 import DatePickerModal from '../../shareComponents/DatePickerModal';
 import {useUserContext} from '../../contexts/UserContext';
 import events from '../../lib/events';
-import {createCount} from '../../lib/statistics';
+import {updateCount} from '../../lib/statistics';
 
 const categoryChips = [
   {id: 1, content: '외래진료'},
@@ -64,7 +64,7 @@ function HealthRecord({order, onSubmit}) {
       console.log(error.message);
     });
 
-    await createCount({code, id}).catch(error => {
+    await updateCount({code, id}).catch(error => {
       console.log(error.message);
     });
 
